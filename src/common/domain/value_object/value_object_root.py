@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import Generic, TypeVar
 
-T = TypeVar('T')
+T = TypeVar('T', bound='ValueObjectRoot')
 
 class ValueObjectRoot(ABC, Generic[T]):
     
