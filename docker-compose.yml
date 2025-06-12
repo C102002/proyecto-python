@@ -6,3 +6,25 @@ services:
     container_name: fastapi_app
     ports:
       - "8000:8000"
+    networks:
+      - fastapi_app_net
+
+  postgres:
+    image: postgres:16
+    container_name: pg_fastapi_app
+    environment:
+      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_USER=${DB_USERNAME}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+    ports:
+      - '${DB_PORT}:5432'
+    volumes:
+      - pg_fastapi_app_vol:/var/lib/postgresql/data
+    networks:
+      - fastapi_app_net
+
+volumes:
+  pg_fastapi_app_vol:
+
+networks:
+  fastapi_app_net:
