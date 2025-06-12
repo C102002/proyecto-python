@@ -1,5 +1,7 @@
-from sqlmodel import SQLModel, create_engine, Session
-from typing import Generator
+from sqlmodel import SQLModel
+from sqlmodel.ext.asyncio.session import AsyncSession
+from sqlalchemy.ext.asyncio import create_async_engine 
+from typing import AsyncGenerator
 import os
 from dotenv import load_dotenv
 
@@ -12,11 +14,14 @@ class PostgresDatabase:
         if self.url is None:
             raise ValueError("La variable de entorno DATABASE_URL no esta definida")
         
-        self.engine = create_engine(self.url, echo=True)
+        self.engine = create_async_engine(self.url, echo=True)
 
-    def create_db_and_tables(self):
-        SQLModel.metadata.create_all(self.engine)
+    async def create_db_and_tables(self):
 
-    def get_session(self) -> Generator[Session, None, None]:
-        with Session(self.engine) as session:
+        async with self.engine.begin() as conn:
+            await conn.run_sync(SQLModel.metadata.create_all)
+
+    async def get_session(self) -> AsyncGenerator[AsyncSession, None]:
+        
+        async with AsyncSession(self.engine) as session:
             yield session
