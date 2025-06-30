@@ -21,8 +21,8 @@ class UserLoginService(IService[UserLoginRequestDto, UserLoginResponseDto]):
 
         if (user.is_error):
             return Result.fail(user.error)
-        
-        if (self.encryptor.decrypt(user.value.password.password) != value.password):
+
+        if (self.encryptor.verify_password(value.password, user.value.password.password) != True):
             return Result.fail(InvalidCredentialsException())
 
         token = self.token_generator.generate_token({"sub": user.value.email.email})

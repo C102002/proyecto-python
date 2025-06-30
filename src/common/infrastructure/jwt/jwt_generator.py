@@ -28,11 +28,11 @@ class JwtGenerator(ITokenGenerator):
     def decode_token(self, token: str) -> str:
         try:
             token_decode = jwt.decode(token, self.secret, algorithms=["HS256"])
-            user_email = token_decode.get("sub")
+            user = token_decode.get("sub")
 
-            if user_email is None:
-                raise HTTPException(status_code=401, detail="Token inválido", headers={"WWW-Authenticate": "Bearer"})
-            
-            return user_email
+            if user is None:
+                raise HTTPException(status_code=401, detail="Unauthorized: Invalid token.", headers={"WWW-Authenticate": "Bearer"})
+
+            return user
         except JWTError:
-            raise HTTPException(status_code=401, detail="Token inválido", headers={"WWW-Authenticate": "Bearer"})
+            raise HTTPException(status_code=401, detail="Unauthorized: Invalid token.", headers={"WWW-Authenticate": "Bearer"})

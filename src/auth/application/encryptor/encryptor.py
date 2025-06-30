@@ -3,9 +3,9 @@ from abc import ABC, abstractmethod
 class IEncryptor(ABC):
 
     @abstractmethod
-    def encrypt(self, plane_data: str) -> str:
+    def encrypt(self, plain_data: str) -> str:
         pass
     
     @abstractmethod
-    def decrypt(self, hashed_data: str) -> str:
+    def verify_password(self, plain_data: str, hashed_data: str) -> bool:
         pass

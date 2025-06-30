@@ -1,14 +1,17 @@
 from fastapi import FastAPI, Depends
-from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from src.common.infrastructure import JwtTransformer
 
 class UserRegisterController:
     def __init__(self, app: FastAPI):
         self.app = app
-        self.oauth2_scheme = OAuth2PasswordBearer("/login")
+
         self.setup_routes()
+
+    async def init(self):
+        pass
 
     def setup_routes(self):
         @self.app.post("/register")
-        async def register_user(token: str = Depends(self.oauth2_scheme)):
+        async def register_user(token: str = Depends(JwtTransformer())):
             print(token)
             return token
