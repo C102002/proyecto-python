@@ -9,8 +9,12 @@ from alembic import context
 import sys
 import os
 from dotenv import load_dotenv
-from src.auth.infrastructure.models.orm_user_model import User
+from src.auth.infrastructure.models.orm_user_model import OrmUserModel
 from sqlmodel import SQLModel
+import asyncio
+
+if sys.platform == "win32":
+    asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
 
 sys.path.insert(0, os.path.abspath("."))
 
