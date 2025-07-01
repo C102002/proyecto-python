@@ -14,3 +14,7 @@ class IUserQueryRepository(ABC):
     @abstractmethod
     async def get_all_users(self) -> Result[list[User]]:
         pass
+
+    @abstractmethod
+    async def exists_user_by_email(self, email: str) -> Result[bool]:
+        pass

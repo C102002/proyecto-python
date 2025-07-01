@@ -78,3 +78,14 @@ class OrmUserQueryRepository(IUserQueryRepository):
             return Result.success(user)
         except Exception as e:
             return Result.fail(InfrastructureException(str(e)))
+        
+    async def exists_user_by_email(self, email: str) -> Result[bool]:
+        try:
+            result = await self.session.execute(
+                select(OrmUserModel).where(literal_column("email") == email)
+            )
+            orm_user = result.scalars().first()
+
+            return Result.success(orm_user is not None)
+        except Exception as e:
+            return Result.fail(InfrastructureException(str(e)))
