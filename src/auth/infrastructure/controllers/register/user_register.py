@@ -49,4 +49,4 @@ class UserRegisterController:
 
             response = await service.execute(request)
 
-            return response
+            return response.value
