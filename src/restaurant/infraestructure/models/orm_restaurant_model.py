@@ -3,7 +3,7 @@ from datetime import time
 from sqlmodel import SQLModel, Field
 
 
-class Restaurant(SQLModel, table=True):
+class OrmRestaurantModel(SQLModel, table=True):
     id: str = Field(
         primary_key=True,
         nullable=False,

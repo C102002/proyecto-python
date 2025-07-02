@@ -1,0 +1,36 @@
+from src.common.application import IService
+from src.common.application.id_generator.id_generator import IIdGenerator
+from src.common.utils import Result
+from src.restaurant.domain.aggregate.restaurant import Restaurant
+from src.restaurant.domain.value_objects.restaurant_closing_time_vo import RestaurantClosingTimeVo
+from src.restaurant.domain.value_objects.restaurant_id_vo import RestaurantIdVo
+from src.restaurant.domain.value_objects.restaurant_location_vo import RestaurantLocationVo
+from src.restaurant.domain.value_objects.restaurant_name_vo import RestaurantNameVo
+from src.restaurant.domain.value_objects.restaurant_opening_time_vo import RestaurantOpeningTimeVo
+from ..dtos.request.create_restaurant_request_dto import CreateRestaurantRequestDTO
+from ..dtos.response.create_restaurant_response_dto import CreateRestaurantResponseDTO
+from ..repositories.command.restaurant_command_repository import IRestaurantCommandRepository
+
+class CreateRestaurantService(IService[CreateRestaurantRequestDTO, CreateRestaurantResponseDTO]):
+
+    def __init__(self, restaurant_command_repository: IRestaurantCommandRepository, id_generator:IIdGenerator):
+        super().__init__()
+        self.restaurant_command_repository = restaurant_command_repository
+        self.id_generator = id_generator
+
+    async def execute(self, value: CreateRestaurantRequestDTO) -> Result[CreateRestaurantResponseDTO]:
+        restaurant=Restaurant(
+            RestaurantIdVo(self.id_generator.generate_id()),
+            RestaurantNameVo(value.name),
+            RestaurantLocationVo(value.lat,value.lng),
+            RestaurantOpeningTimeVo(value.opening_time),
+            RestaurantClosingTimeVo(value.closing_time)
+        )
+        
+        response=await self.restaurant_command_repository.save(restaurant=restaurant)
+        
+        if response.is_error:
+            return Result.fail(response.error)
+        
+        return Result.success(response)
+
