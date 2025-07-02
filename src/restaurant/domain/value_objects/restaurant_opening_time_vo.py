@@ -1,7 +1,7 @@
 from datetime import time
 from src.common.domain import ValueObjectRoot
-from src.restuarant.domain.domain_exceptions.invalid_opening_time_range_exception import InvalidOpeningTimeRangeException
-from src.restuarant.domain.domain_exceptions.invalid_opening_time_exception import InvalidOpeningTimeRangeException
+from ...domain.domain_exceptions.invalid_opening_time_range_exception import InvalidOpeningTimeRangeException
+from ...domain.domain_exceptions.invalid_opening_time_exception import InvalidOpeningTimeRangeException
 
 
 class RestaurantOpeningTimeVo(ValueObjectRoot["RestaurantOpeningTimeVo"]):

@@ -1,7 +1,6 @@
 from src.common.domain import ValueObjectRoot
-from src.restuarant.domain.domain_exceptions.invalid_location_longitude_exception import InvalidLocationLongitudeException
+from ...domain.domain_exceptions.invalid_location_longitude_exception import InvalidLocationLongitudeException
 from ..domain_exceptions.invalid_location_latitude_exception import InvalidLocationLatitudeException
-import re
 
 class RestaurantLocationVo(ValueObjectRoot["RestaurantLocationVo"]):
     

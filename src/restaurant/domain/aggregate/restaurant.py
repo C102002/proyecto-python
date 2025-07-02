@@ -1,12 +1,12 @@
-from src.common.domain import AggregateRoot
 from src.common.domain.domain_event.domain_event_root import DomainEventRoot
-from src.restuarant.domain.domain_exceptions.invalid_restaurant_closing_greater_opening_exception import InvalidRestaurantClosingGreaterOpeningException
-from src.restuarant.domain.domain_exceptions.invalid_restaurant_exception import InvalidRestaurantException
-from src.restuarant.domain.value_objects.restaurant_closing_time_vo import RestaurantClosingTimeVo
-from src.restuarant.domain.value_objects.restaurant_id_vo import RestaurantIdVo
-from src.restuarant.domain.value_objects.restaurant_location_vo import RestaurantLocationVo
-from src.restuarant.domain.value_objects.restaurant_name_vo import RestaurantNameVo
-from src.restuarant.domain.value_objects.restaurant_opening_time_vo import RestaurantOpeningTimeVo
+from ...domain import AggregateRoot
+from ...domain.domain_exceptions.invalid_restaurant_closing_greater_opening_exception import InvalidRestaurantClosingGreaterOpeningException
+from ...domain.domain_exceptions.invalid_restaurant_exception import InvalidRestaurantException
+from ...domain.value_objects.restaurant_closing_time_vo import RestaurantClosingTimeVo
+from ...domain.value_objects.restaurant_id_vo import RestaurantIdVo
+from ...domain.value_objects.restaurant_location_vo import RestaurantLocationVo
+from ...domain.value_objects.restaurant_name_vo import RestaurantNameVo
+from ...domain.value_objects.restaurant_opening_time_vo import RestaurantOpeningTimeVo
 
 
 class Restaurant(AggregateRoot["RestaurantIdVo"]):

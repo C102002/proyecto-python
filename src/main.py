@@ -4,6 +4,8 @@ from src.common.infrastructure import PostgresDatabase
 from contextlib import asynccontextmanager
 from src.auth.infrastructure.controllers.register.user_register_controller import UserRegisterController
 from src.auth.infrastructure.controllers.login.user_login import UserLoginController
+from src.restaurant.infraestructure.controllers.create_restaurant.create_restaurant import CreateRestaurantController
+from src.restaurant.infraestructure.controllers.get_all_restaurants.get_all_restaurant import GetAllRestaurantController
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -21,3 +23,8 @@ def root():
 
 UserRegisterController(app)
 UserLoginController(app)
+
+
+# Restaurants Controllers
+CreateRestaurantController(app)
+GetAllRestaurantController(app)
