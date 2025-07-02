@@ -1,7 +1,6 @@
 from fastapi import Depends
-from src.common.infrastructure.jwt.jwt_generator import JwtGenerator
 from fastapi.security import OAuth2PasswordBearer
-from ..roles.role_scopes import ALL_KNOWN_SCOPES
+from src.common.infrastructure import ALL_KNOWN_SCOPES, JwtGenerator
 class JwtTransformer:
 
     def __init__(self):
