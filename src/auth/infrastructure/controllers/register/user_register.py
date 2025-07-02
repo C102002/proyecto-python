@@ -1,6 +1,5 @@
-from fastapi import FastAPI
-from src.common.infrastructure import JwtTransformer
-from src.common.infrastructure import PostgresDatabase
+from fastapi import FastAPI, Security
+from src.common.infrastructure import PostgresDatabase, UserRoleVerify
 from src.auth.infrastructure.repositories.query.orm_user_query_repository import OrmUserQueryRepository
 from src.auth.infrastructure.repositories.command.orm_user_command_repository import OrmUserCommandRepository
 from src.auth.infrastructure.encryptor.bcrypt_encryptor import BcryptEncryptor
@@ -33,7 +32,7 @@ class UserRegisterController:
 
     def setup_routes(self):
         @self.app.post("/register")
-        async def register_user(user: UserRegisterRequestInfDto):
+        async def register_user(user: UserRegisterRequestInfDto, token = Security(UserRoleVerify(), scopes=["client:read"])):
 
             if self.user_register_service is None:
                 raise RuntimeError("UserRegisterService not initialized. Did you forget to call init()?")
@@ -49,4 +48,4 @@ class UserRegisterController:
 
             response = await service.execute(request)
 
-            return response.value
+            return None

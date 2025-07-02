@@ -4,5 +4,7 @@ from .id_generator.uuid_generator import UuidGenerator
 from .logger.fastapi_logger import FastAPILogger
 from .timer.timer_timestamp import TimerTimestamp
 from .middlewares.jwt_transformer import JwtTransformer
+from .middlewares.user_role_verify import UserRoleVerify
 from .jwt.jwt_generator import JwtGenerator
 from .infrastructure_exception.infrastructure_exception import InfrastructureException
+from .roles.role_scopes import ROLE_SCOPES, ALL_KNOWN_SCOPES

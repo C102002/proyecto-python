@@ -39,7 +39,6 @@ class UserLoginController:
                 email=form_data.username,
                 password=form_data.password
             ))
-            print(form_data.username, form_data.password)
             return {
                 "access_token": response.value.token,
                 "token_type": "bearer"
