@@ -7,6 +7,8 @@ from src.auth.infrastructure.controllers.login.user_login import UserLoginContro
 
 user_register_controller = None
 user_login_controller = None
+from src.restaurant.infraestructure.controllers.create_restaurant.create_restaurant import CreateRestaurantController
+from src.restaurant.infraestructure.controllers.get_all_restaurants.get_all_restaurant import GetAllRestaurantController
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -29,3 +31,11 @@ CorsConfig.setup_cors(app)
 @app.get("/")
 def root():
     return {"Hello": "World"}
+
+UserRegisterController(app)
+UserLoginController(app)
+
+
+# Restaurants Controllers
+CreateRestaurantController(app)
+GetAllRestaurantController(app)
