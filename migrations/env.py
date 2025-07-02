@@ -9,7 +9,7 @@ from alembic import context
 import sys
 import os
 from dotenv import load_dotenv
-from src.auth.infrastructure.models.orm_user_model import User
+from src.auth.infrastructure.models.orm_user_model import OrmUserModel
 from sqlmodel import SQLModel
 import asyncio
 
