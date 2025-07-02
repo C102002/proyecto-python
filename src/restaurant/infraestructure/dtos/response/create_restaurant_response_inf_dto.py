@@ -2,7 +2,7 @@ from pydantic import BaseModel, Field
 from datetime import time
 
 
-class CreateRestaurantResponseDTO(BaseModel):
+class CreateRestaurantResponseInfDTO(BaseModel):
     id: str = Field(..., description="UUID único del restaurante")
     lat: float = Field(..., description="Latitud del restaurante en grados decimales")
     lng: float = Field(..., description="Longitud del restaurante en grados decimales")

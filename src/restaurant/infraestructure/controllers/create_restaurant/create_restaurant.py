@@ -2,7 +2,7 @@
 from fastapi import FastAPI
 from fastapi import status
 from ...routers.restaurant_router import restaurant_router
-from ...dtos.request.create_restaurant_request_dto import CreateRestaurantRequestDTO
+from ...dtos.request.create_restaurant_request_inf_dto import CreateRestaurantRequestInfDTO
 
 class CreateRestaurantController:
     def __init__(self, app: FastAPI):
@@ -12,7 +12,7 @@ class CreateRestaurantController:
     def setup_routes(self):
         @restaurant_router.post(
             "/",
-            response_model=CreateRestaurantRequestDTO,
+            response_model=CreateRestaurantRequestInfDTO,
             status_code=status.HTTP_201_CREATED,
             summary="Crear restaurante",
             description=(
@@ -25,5 +25,5 @@ class CreateRestaurantController:
             ),
             response_description="Datos del restaurante recién creado"
         )
-        async def create_restaurant(input_dto: CreateRestaurantRequestDTO):
+        async def create_restaurant(input_dto: CreateRestaurantRequestInfDTO):
             return input_dto
