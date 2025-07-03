@@ -23,7 +23,10 @@ class JwtGenerator(ITokenGenerator):
 
         data_copy.update({"exp": expires})
 
-        roles = ROLE_SCOPES.get(role, [])
+        roles = ROLE_SCOPES.get(UserRoleEnum.CLIENT, [])
+
+        if (role == UserRoleEnum.ADMIN):
+            roles = ROLE_SCOPES.get(role, []) + ROLE_SCOPES.get(UserRoleEnum.CLIENT, [])
         
         data_copy.update({"scopes": roles})
 
