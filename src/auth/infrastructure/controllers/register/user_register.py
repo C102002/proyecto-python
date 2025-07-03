@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Security, Depends
+from fastapi import FastAPI, Depends, status
 from src.common.infrastructure import GetPostgresqlSession
 from ...middlewares.user_role_verify import UserRoleVerify
 from src.auth.infrastructure.repositories.query.orm_user_query_repository import OrmUserQueryRepository
@@ -11,12 +11,13 @@ from src.auth.application.dtos.request.user_register_request_dto import UserRegi
 from src.common.application import ExceptionDecorator
 from sqlalchemy.ext.asyncio import AsyncSession
 from src.common.infrastructure.error_handler.fast_api_error_handler import FastApiErrorHandler
+from ...routers.auth_router import auth_router
 
 class UserRegisterController:
     def __init__(self, app: FastAPI):
         self.app = app
-        
         self.setup_routes()
+        app.include_router(auth_router)
 
     async def get_service(self, postgres_session: AsyncSession = Depends(GetPostgresqlSession())):
         encryptor = BcryptEncryptor()
@@ -34,7 +35,19 @@ class UserRegisterController:
         return user_register_service
 
     def setup_routes(self):
-        @self.app.post("/register")
+        @auth_router.post(
+            "/register",
+            response_model=None,
+            status_code=status.HTTP_201_CREATED,
+            summary="Register a user",
+            description=(
+                "Crea un nuevo usuario con:\n"
+                "- nombre\n"
+                "- email\n"
+                "- password\n"
+            ),
+            response_description="No devuelve ningun valor"
+        )
         async def register_user(user: UserRegisterRequestInfDto, register_service: UserRegisterService = Depends(self.get_service)):
 
             if register_service is None:
