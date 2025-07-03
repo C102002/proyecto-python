@@ -5,7 +5,6 @@ from ..domain_exceptions.invalid_location_latitude_exception import InvalidLocat
 class RestaurantLocationVo(ValueObjectRoot["RestaurantLocationVo"]):
     
     def __init__(self, lat: float, lng:float):
-        regex_email = r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
 
         if not -90.0 <= lat <=  90.0:
             raise InvalidLocationLatitudeException(
