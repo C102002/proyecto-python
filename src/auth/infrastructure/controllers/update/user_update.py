@@ -9,6 +9,7 @@ from ...dtos.request.user_update_request_inf_dto import UserUpdateRequestInfDto
 from src.auth.application.dtos.request.user_update_request_dto import UserUpdateRequestDto
 from src.common.application import ExceptionDecorator
 from sqlalchemy.ext.asyncio import AsyncSession
+from src.common.infrastructure.error_handler.fast_api_error_handler import FastApiErrorHandler
 
 class UserUpdateController:
     def __init__(self, app: FastAPI):
@@ -36,7 +37,7 @@ class UserUpdateController:
             if update_service is None:
                 raise RuntimeError("UserUpdateService not initialized. Did you forget to call init()?")
 
-            service = ExceptionDecorator(update_service)
+            service = ExceptionDecorator(update_service, FastApiErrorHandler())
 
             request = UserUpdateRequestDto(
                 id=user.id,

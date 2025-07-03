@@ -8,5 +8,5 @@ class IErrorHandler(ABC):
     """
 
     @abstractmethod
-    def to_http(self,exception:BaseException,message: str) -> Exception:
+    def to_http(self,error:BaseException,message: str) -> Exception:
         pass

@@ -7,6 +7,7 @@ from src.common.infrastructure import JwtGenerator, GetPostgresqlSession
 from src.common.application.aspects.exception_decorator.exception_decorator import ExceptionDecorator
 from src.auth.application.dtos.request.user_login_request_dto import UserLoginRequestDto
 from sqlalchemy.ext.asyncio import AsyncSession
+from src.common.infrastructure.error_handler.fast_api_error_handler import FastApiErrorHandler
 
 class UserLoginController:
     def __init__(self, app: FastAPI):
@@ -33,7 +34,7 @@ class UserLoginController:
             if login_service is None:
                 raise RuntimeError("UserLoginService not initialized. Did you forget to call init()?")
 
-            service = ExceptionDecorator(login_service)
+            service = ExceptionDecorator(login_service, FastApiErrorHandler())
 
             response = await service.execute(UserLoginRequestDto(
                 email=form_data.username,
