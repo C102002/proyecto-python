@@ -7,3 +7,7 @@ class IUserCommandRepository(ABC):
     @abstractmethod
     async def save(self, user: User) -> Result[User]:
         pass
+
+    @abstractmethod
+    async def update(self, user: User) -> Result[User]:
+        pass
