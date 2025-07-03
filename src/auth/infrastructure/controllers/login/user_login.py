@@ -1,7 +1,6 @@
 from fastapi import FastAPI, Depends
 from fastapi.security import OAuth2PasswordRequestForm
 from src.auth.application.services.user_login_service import UserLoginService
-from src.common.infrastructure import PostgresDatabase
 from src.auth.infrastructure.repositories.query.orm_user_query_repository import OrmUserQueryRepository
 from src.auth.infrastructure.encryptor.bcrypt_encryptor import BcryptEncryptor
 from src.common.infrastructure import JwtGenerator, GetPostgresqlSession

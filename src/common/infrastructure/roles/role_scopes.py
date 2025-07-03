@@ -1,13 +1,13 @@
 ROLE_SCOPES = {
     "ADMIN": [
-        "admin:gestion",
-        "admin:ver_reservas"
+        "admin:manage",
+        "admin:view_reservations"
     ],
     "CLIENT": [
-        "client:crear_perfil",
-        "client:mod_perfil",
-        "client:reservar_mesa",
-        "client:preordenar_menu"
+        "client:read_user",
+        "client:write_user",
+        "client:reserve_table",
+        "client:order"
     ]
 }
 

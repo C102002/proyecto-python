@@ -4,14 +4,13 @@ from ...middlewares.user_role_verify import UserRoleVerify
 from src.auth.infrastructure.repositories.query.orm_user_query_repository import OrmUserQueryRepository
 from src.auth.infrastructure.repositories.command.orm_user_command_repository import OrmUserCommandRepository
 from src.auth.infrastructure.encryptor.bcrypt_encryptor import BcryptEncryptor
-from src.auth.application.services.user_register_service import UserRegisterService
-from src.common.infrastructure import UuidGenerator
-from ...dtos.request.user_register_request_inf_dto import UserRegisterRequestInfDto
-from src.auth.application.dtos.request.user_register_request_dto import UserRegisterRequestDto
+from src.auth.application.services.user_update_service import UserUpdateService
+from ...dtos.request.user_update_request_inf_dto import UserUpdateRequestInfDto
+from src.auth.application.dtos.request.user_update_request_dto import UserUpdateRequestDto
 from src.common.application import ExceptionDecorator
 from sqlalchemy.ext.asyncio import AsyncSession
 
-class UserRegisterController:
+class UserUpdateController:
     def __init__(self, app: FastAPI):
         self.app = app
         
@@ -19,35 +18,33 @@ class UserRegisterController:
 
     async def get_service(self, postgres_session: AsyncSession = Depends(GetPostgresqlSession())):
         encryptor = BcryptEncryptor()
-        id_generator = UuidGenerator()
         orm_user_query_repository = OrmUserQueryRepository(postgres_session)
         orm_user_command_repository = OrmUserCommandRepository(postgres_session)
 
-        user_register_service = UserRegisterService(
+        user_update_service = UserUpdateService(
             orm_user_query_repository,
             orm_user_command_repository,
-            encryptor,
-            id_generator
+            encryptor
         )
 
-        return user_register_service
+        return user_update_service
 
     def setup_routes(self):
-        @self.app.post("/register")
-        async def register_user(user: UserRegisterRequestInfDto, register_service: UserRegisterService = Depends(self.get_service)):
+        @self.app.patch("/update")
+        async def update_user(user: UserUpdateRequestInfDto, token = Security(UserRoleVerify(), scopes=["client:write_user", "admin:manage"]), update_service: UserUpdateService = Depends(self.get_service)):
 
-            if register_service is None:
-                raise RuntimeError("UserRegisterService not initialized. Did you forget to call init()?")
+            if update_service is None:
+                raise RuntimeError("UserUpdateService not initialized. Did you forget to call init()?")
 
-            service = ExceptionDecorator(register_service)
+            service = ExceptionDecorator(update_service)
 
-            request = UserRegisterRequestDto(
+            request = UserUpdateRequestDto(
+                id=user.id,
                 email=user.email,
                 name=user.name,
                 password=user.password,
-                role=user.role
             )
 
-            response = await service.execute(request)
+            await service.execute(request)
 
             return None
