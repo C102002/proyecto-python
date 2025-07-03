@@ -8,6 +8,8 @@ from src.common.infrastructure.infrastructure_exception.enum.infraestructure_exc
 from src.common.infrastructure.infrastructure_exception.infrastructure_exception import (
     InfrastructureException
 )
+from src.common.application.application_exception.application_exception import ApplicationException
+from src.common.application.application_exception.enum.application_exception_type import ExceptionApplicationType
 from src.common.utils.base_exception import BaseException
 from src.common.utils.base_exception_enum import BaseExceptionEnum
 
@@ -17,8 +19,20 @@ class FastApiErrorHandler(IErrorHandler):
     def _handle_domain_exception(self, message: str) -> Exception:
         return HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=message)
 
-    def _handle_application_exception(self, message: str) -> Exception:
-        return HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=message)
+    def _handle_application_exception(
+        self,
+        error: ApplicationException, 
+        message: str
+    ) -> Exception:
+        logging.debug(f"ENTER _handle_application_exception: {error!r}, {message!r}")
+        app_type = error.get_application_type()
+
+        if app_type == ExceptionApplicationType.CONFLICT:
+            code = status.HTTP_409_CONFLICT
+        else:
+            return HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=message)
+        
+        return HTTPException(status_code=code, detail=message)
 
     def _handle_infrastructure_exception(
         self,
@@ -51,7 +65,13 @@ class FastApiErrorHandler(IErrorHandler):
         if error.type == BaseExceptionEnum.DOMAIN_EXCEPTION:
             return self._handle_domain_exception(message)
         elif error.type == BaseExceptionEnum.APPLICATION_EXCEPTION:
-            return self._handle_application_exception(message)
+            if isinstance(error, ApplicationException):
+                return self._handle_application_exception(error, message)
+            else:
+                return HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail="Invalid application exception"
+                )
         elif error.type == BaseExceptionEnum.INFRASTRUCTURE_EXCEPTION:
             if isinstance(error, InfrastructureException):
                 return self._handle_infrastructure_exception(error, message)

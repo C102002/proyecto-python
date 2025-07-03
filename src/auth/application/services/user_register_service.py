@@ -1,18 +1,17 @@
-from src.common.application import IService
+from src.common.application import IService, IIdGenerator
 from src.common.utils import Result
 from ..dtos.request.user_register_request_dto import UserRegisterRequestDto
 from ..repositories.query.user_query_repository import IUserQueryRepository
 from ..repositories.command.user_command_repository import IUserCommandRepository
 from ..encryptor.encryptor import IEncryptor
 from ..exceptions.user_already_exists_exception import UserAlreadyExistsException
-from src.common.utils import Result
-from src.common.application import IIdGenerator
 from src.auth.domain.aggregate.user import User
 from src.auth.domain.aggregate.user import UserEmailVo
 from src.auth.domain.aggregate.user import UserIdVo
 from src.auth.domain.aggregate.user import UserNameVo
 from src.auth.domain.aggregate.user import UserPasswordVo
 from src.auth.domain.aggregate.user import UserRoleVo
+from src.auth.domain.enum.user_role_enum import UserRoleEnum
 
 class UserRegisterService(IService[UserRegisterRequestDto, None]):
 
@@ -41,7 +40,7 @@ class UserRegisterService(IService[UserRegisterRequestDto, None]):
             UserEmailVo(value.email),
             UserNameVo(value.name),
             UserPasswordVo(password_hashed),
-            UserRoleVo(value.role)
+            UserRoleVo(UserRoleEnum.CLIENT)
         )
 
         user_saved = await self.user_command_repository.save(new_user)

@@ -46,7 +46,6 @@ class UserRegisterController:
                 email=user.email,
                 name=user.name,
                 password=user.password,
-                role=user.role
             )
 
             response = await service.execute(request)
