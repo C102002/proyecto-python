@@ -16,8 +16,8 @@ class RestaurantClosingTimeVo(ValueObjectRoot["RestaurantClosingTimeVo"]):
         self.__closing_time = closing_time
 
     def equals(self, other: "RestaurantClosingTimeVo") -> bool:
-        return self.__closing_time == other.opening
+        return self.__closing_time == other.closing_time
     
     @property
     def closing_time(self) -> time:
-        return self.closing_time
+        return self.__closing_time

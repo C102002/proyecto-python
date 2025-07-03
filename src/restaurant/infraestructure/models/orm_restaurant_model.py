@@ -4,6 +4,9 @@ from sqlmodel import SQLModel, Field
 
 
 class OrmRestaurantModel(SQLModel, table=True):
+    
+    __tablename__ = "restaurant" # type: ignore
+    
     id: str = Field(
         primary_key=True,
         nullable=False,

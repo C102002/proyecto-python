@@ -3,11 +3,17 @@ from pydantic import BaseModel, Field
 from datetime import time
 
 class CreateRestaurantRequestInfDTO(BaseModel):
-    lat: float = Field(..., description="Latitud del restaurante, en grados decimales")
-    lng: float = Field(..., description="Longitud del restaurante, en grados decimales")
-    name: str = Field(..., description="Nombre del restaurante")
-    opening_time: time = Field(..., description="Hora de apertura (formato HH:MM:SS)")
-    closing_time: time = Field(..., description="Hora de cierre (formato HH:MM:SS)")
-    
+    lat: float = Field(0.0, description="Latitud del restaurante, en grados decimales")
+    lng: float = Field(0.0, description="Longitud del restaurante, en grados decimales")
+    name: str = Field("Mi Restaurante", description="Nombre del restaurante")
+    opening_time: time = Field(
+        default_factory=lambda: time.fromisoformat("09:00:00"),
+        description="Hora de apertura (HH:MM:SS)"
+    )
+    closing_time: time = Field(
+        default_factory=lambda: time.fromisoformat("22:00:00"),
+        description="Hora de cierre (HH:MM:SS)"
+    )
+
     class Config:
         title = "CreateRestaurantRequestDTO"

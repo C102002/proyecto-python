@@ -17,17 +17,18 @@ class RestaurantLocationVo(ValueObjectRoot["RestaurantLocationVo"]):
                 f"Longitud inválida: {lng}. Debe estar entre -180 y 180."
             )
         
-        self.lat = lat
-        self.lng = lng
+        # guardamos en atributos privados
+        self._lat = lat
+        self._lng = lng
 
     def equals(self, value: "RestaurantLocationVo") -> bool:
-        return (self.lat == value.lat) and (self.lng == value.lng)
+        return (self._lat == value._lat) and (self._lng == value._lng)
 
     
     @property
     def lat(self) -> float:
-        return self.lat
+        return self._lat
 
     @property
     def lng(self) -> float:
-        return self.lng
+        return self._lng

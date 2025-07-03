@@ -82,6 +82,11 @@ This is a Python API built with FastAPI and managed with Poetry.
     uvicorn src.main:app --reload
     ```
 
+    ```bash
+    # Run the app in debug mode
+    uvicorn src.main:app --reload --log-level debug
+    ```
+
     Replace `src.main:app` if your application entry point is different. The `--reload` flag enables auto-reloading when code changes, which is useful for development.
 
     The API will usually be available at `http://127.0.0.1:8000`.

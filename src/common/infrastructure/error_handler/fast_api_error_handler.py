@@ -1,0 +1,67 @@
+import logging
+from fastapi import HTTPException, status
+
+from src.common.application.error_handler.error_handler import IErrorHandler
+from src.common.infrastructure.infrastructure_exception.enum.infraestructure_exception_type import (
+    ExceptionInfrastructureType
+)
+from src.common.infrastructure.infrastructure_exception.infrastructure_exception import (
+    InfrastructureException
+)
+from src.common.utils.base_exception import BaseException
+from src.common.utils.base_exception_enum import BaseExceptionEnum
+
+
+class FastApiErrorHandler(IErrorHandler):
+
+    def _handle_domain_exception(self, message: str) -> Exception:
+        return HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=message)
+
+    def _handle_application_exception(self, message: str) -> Exception:
+        return HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=message)
+
+    def _handle_infrastructure_exception(
+        self,
+        error: InfrastructureException,
+        message: str
+    ) -> Exception:
+        logging.debug(f"ENTER _handle_infrastructure_exception: {error!r}, {message!r}")
+        infra_type = error.get_infrastructure_type()
+
+        if infra_type == ExceptionInfrastructureType.BAD_REQUEST:
+            code = status.HTTP_400_BAD_REQUEST
+        elif infra_type == ExceptionInfrastructureType.CONFLICT:
+            code = status.HTTP_409_CONFLICT
+        elif infra_type == ExceptionInfrastructureType.NOT_FOUND:
+            code = status.HTTP_404_NOT_FOUND
+        elif infra_type == ExceptionInfrastructureType.PERSISTENCE:
+            code = status.HTTP_500_INTERNAL_SERVER_ERROR
+        elif infra_type == ExceptionInfrastructureType.UNAUTHORIZED:
+            code = status.HTTP_401_UNAUTHORIZED
+        elif infra_type == ExceptionInfrastructureType.INTERNAL_SERVER_ERROR:
+            code = status.HTTP_500_INTERNAL_SERVER_ERROR
+        else:
+            code = status.HTTP_500_INTERNAL_SERVER_ERROR
+            message = "Unexpected infrastructure error"
+
+        return HTTPException(status_code=code, detail=message)
+
+    def to_http(self, error: BaseException, message: str) -> Exception:
+        print(f"error del mapper: {error!r}")
+        if error.type == BaseExceptionEnum.DOMAIN_EXCEPTION:
+            return self._handle_domain_exception(message)
+        elif error.type == BaseExceptionEnum.APPLICATION_EXCEPTION:
+            return self._handle_application_exception(message)
+        elif error.type == BaseExceptionEnum.INFRASTRUCTURE_EXCEPTION:
+            if isinstance(error, InfrastructureException):
+                return self._handle_infrastructure_exception(error, message)
+            else:
+                return HTTPException(
+                    status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                    detail="Invalid infrastructure exception"
+                )
+        else:
+            return HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="Unexpected error"
+            )

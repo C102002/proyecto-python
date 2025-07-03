@@ -27,10 +27,19 @@ class CreateRestaurantService(IService[CreateRestaurantRequestDTO, CreateRestaur
             RestaurantClosingTimeVo(value.closing_time)
         )
         
-        response=await self.restaurant_command_repository.save(restaurant=restaurant)
+        response_repo=await self.restaurant_command_repository.save(restaurant=restaurant)
         
-        if response.is_error:
-            return Result.fail(response.error)
+        if response_repo.is_error:
+            return Result.fail(response_repo.error)
+        
+        response=CreateRestaurantResponseDTO(
+            id=restaurant.id.restaurant_id,
+            lat=restaurant.location.lat,
+            lng=restaurant.location.lng,
+            name=restaurant.name.name,
+            opening_time=restaurant.opening_time.opening_time,
+            closing_time=restaurant.closing_time.closing_time
+        )
         
         return Result.success(response)
 
