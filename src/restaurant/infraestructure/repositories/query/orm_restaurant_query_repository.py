@@ -10,11 +10,56 @@ from src.auth.domain.value_objects.user_id_vo import UserIdVo
 from src.auth.domain.value_objects.user_name_vo import UserNameVo
 from src.auth.domain.value_objects.user_password_vo import UserPasswordVo
 from src.auth.domain.value_objects.user_role_vo import UserRoleVo
+from src.restaurant.application.dtos.request.get_all_restaurant_request_dto import GetAllRestaurantRequestDTO
+from src.restaurant.application.repositories.query.restaurant_query_repository import IRestaurantQueryRepository
+from src.restaurant.domain.aggregate.restaurant import Restaurant
+from src.restaurant.domain.value_objects.restaurant_closing_time_vo import RestaurantClosingTimeVo
+from src.restaurant.domain.value_objects.restaurant_id_vo import RestaurantIdVo
+from src.restaurant.domain.value_objects.restaurant_location_vo import RestaurantLocationVo
+from src.restaurant.domain.value_objects.restaurant_name_vo import RestaurantNameVo
+from src.restaurant.domain.value_objects.restaurant_opening_time_vo import RestaurantOpeningTimeVo
+from src.restaurant.infraestructure.models.orm_restaurant_model import OrmRestaurantModel
 
-class OrmUserQueryRepository(IUserQueryRepository):
+class OrmRestaurantQueryRepository(IRestaurantQueryRepository):
 
     def __init__(self, session: AsyncSession):
         self.session = session
+        
+    async def get_by_id(self, restaurant_id: str) -> Result[Restaurant]:
+        pass
+
+    async def get_all_restaurants(
+        self,
+        dto: GetAllRestaurantRequestDTO
+    ) -> Result[list[Restaurant]]:
+
+        try:
+            # Construye la query con paginación
+            stmt = (
+                select(OrmRestaurantModel)
+                .offset(dto.offset)   # salta (page-1)*size filas
+                .limit(dto.limit)     # trae como máximo size filas
+            )
+
+            result = await self.session.execute(stmt)
+            orm_restaurants = result.scalars().all()
+
+            restaurants: list[Restaurant] = []
+            for orm in orm_restaurants:
+                restaurant = Restaurant(
+                    id=RestaurantIdVo(orm.id),
+                    name=RestaurantNameVo(orm.name),
+                    location=RestaurantLocationVo(orm.lat, orm.lng),
+                    opening_time=RestaurantOpeningTimeVo(orm.opening_time),
+                    closing_time=RestaurantClosingTimeVo(orm.closing_time),
+                )
+                restaurants.append(restaurant)
+
+            return Result.success(restaurants)
+
+        except Exception as e:
+            return Result.fail(InfrastructureException(str(e)))
+        
 
     async def get_all_users(self) -> Result[list[User]]:
         try:

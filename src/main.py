@@ -6,7 +6,7 @@ from src.auth.infrastructure.controllers.register.user_register import UserRegis
 from src.auth.infrastructure.controllers.login.user_login import UserLoginController
 from src.auth.infrastructure.controllers.update.user_update import UserUpdateController
 from src.restaurant.infraestructure.controllers.create_restaurant.create_restaurant import CreateRestaurantController
-from src.restaurant.infraestructure.controllers.get_all_restaurants.get_all_restaurant import GetAllRestaurantController
+from src.restaurant.infraestructure.controllers.get_all_restaurant.get_all_restaurant import GetAllRestaurantController
 import faulthandler
 faulthandler.enable()           # colócalo en tu módulo principal, p.ej. src/main.py
 

@@ -2,7 +2,7 @@ from pydantic import BaseModel, Field
 from datetime import time
 
 
-class GetAllRestaurantResponseDTO(BaseModel):
+class GetAllRestaurantResponseInfDTO(BaseModel):
     id: str = Field(..., description="UUID único del restaurante")
     lat: float = Field(..., description="Latitud del restaurante en grados decimales")
     lng: float = Field(..., description="Longitud del restaurante en grados decimales")
@@ -11,4 +11,4 @@ class GetAllRestaurantResponseDTO(BaseModel):
     closing_time: time = Field(..., description="Hora de cierre (formato HH:MM:SS)")
 
     class Config:
-        title = "GetAllRestaurantResponseDTO"
+        title = "GetAllRestaurantResponseInfDTO"

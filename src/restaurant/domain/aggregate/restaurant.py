@@ -31,7 +31,7 @@ class Restaurant(AggregateRoot["RestaurantIdVo"]):
         if not self._id or not self.__location or not self.__opening_time or not self.__closing_time or self.__tables is None:
             raise InvalidRestaurantException()
         
-        if self.closing_time.closing_time < self.opening_time.opening_time:
+        if self.closing_time.closing_time <= self.opening_time.opening_time:
             raise InvalidRestaurantClosingGreaterOpeningException(self.opening_time.opening_time,self.closing_time.closing_time)
         
     def update_location(self, location: RestaurantLocationVo) -> None:
