@@ -10,6 +10,7 @@ from src.auth.domain.value_objects.user_id_vo import UserIdVo
 from src.auth.domain.value_objects.user_name_vo import UserNameVo
 from src.auth.domain.value_objects.user_password_vo import UserPasswordVo
 from src.auth.domain.value_objects.user_role_vo import UserRoleVo
+from ...exceptions.user_not_found_exception import UserNotFoundException
 
 class OrmUserQueryRepository(IUserQueryRepository):
 
@@ -45,7 +46,7 @@ class OrmUserQueryRepository(IUserQueryRepository):
             )
             orm_user = result.scalars().first()
             if orm_user is None:
-                return Result.fail(InfrastructureException("User not found"))
+                return Result.fail(UserNotFoundException())
 
             user = User(
                 id=UserIdVo(orm_user.id),
@@ -66,7 +67,7 @@ class OrmUserQueryRepository(IUserQueryRepository):
             orm_user = result.scalars().first()
 
             if orm_user is None:
-                return Result.fail(InfrastructureException("User not found"))
+                return Result.fail(UserNotFoundException())
 
             user = User(
                 id=UserIdVo(orm_user.id),
@@ -76,5 +77,16 @@ class OrmUserQueryRepository(IUserQueryRepository):
                 role=UserRoleVo(orm_user.role)
             )
             return Result.success(user)
+        except Exception as e:
+            return Result.fail(InfrastructureException(str(e)))
+        
+    async def exists_user_by_email(self, email: str) -> Result[bool]:
+        try:
+            result = await self.session.execute(
+                select(OrmUserModel).where(literal_column("email") == email)
+            )
+            orm_user = result.scalars().first()
+
+            return Result.success(orm_user is not None)
         except Exception as e:
             return Result.fail(InfrastructureException(str(e)))

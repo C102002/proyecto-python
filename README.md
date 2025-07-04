@@ -1,6 +1,27 @@
+<div align="center">
+  <img src="./public/icons/Python-Logo.png" width="400" alt="Java Logo" />
+</div>
+
+<div align="center">
+  <img src="./public/icons/more-spaguetti.png" width="600" alt="Java Logo" />
+</div>
+
 # Python FastAPI Project
 
 This is a Python API built with FastAPI and managed with Poetry.
+
+## Developers
+
+<table align="center">
+    <tbody>
+        <tr>
+            <td align="center"><a href="https://github.com/Fussita" rel="nofollow"><img src="https://avatars.githubusercontent.com/u/110612202?v=4" width="150px;" heigth="450px;" alt="" style="max-width:100%;"><br><sub><b>Hualong Chiang</b></sub></a><br><a href="./public/icons/spaghetti-code.png" title="Commits"><g-emoji class="g-emoji" alias="book" fallback-src="https://github.githubassets.com/images/icons/emoji/unicode/1f4d6.png">📖</g-emoji></a></td>
+            <td align="center"><a href="https://github.com/C102002" rel="nofollow"><img src="https://avatars.githubusercontent.com/u/116277334?v=4" width="150px;" alt="" style="max-width:100%;"><br><sub><b>Alfredo Fung</b></sub></a><br><a href="./public/icons/computer-programming-spaghetti-code-programmer-sticker.jpg" title="Commits"><g-emoji class="g-emoji" alias="book" fallback-src="https://github.githubassets.com/images/icons/emoji/unicode/1f4d6.png">📖</g-emoji></a></td>
+            <td align="center"><a href="https://github.com/DanielBortot" rel="nofollow"><img src="https://avatars.githubusercontent.com/u/103535845?v=4" width="150px;" alt="" style="max-width:100%;"><br><sub><b>Daniel Borot</b></sub></a><br><a href="./public/icons/more-spaguetti.png" title="Commits"><g-emoji class="g-emoji" alias="book" fallback-src="https://github.githubassets.com/images/icons/emoji/unicode/1f4d6.png">📖</g-emoji></a></td>
+            <td align="center"><a href="https://github.com/jghedderich" rel="nofollow"><img src="https://avatars.githubusercontent.com/u/178299864?v=4" width="150px;" alt="" style="max-width:100%;"><br><sub><b>Juan Hedderich</b></sub></a><br><a href="./public/icons/Undocumented-Spaghetti-Code.webp" title="Commits"><g-emoji class="g-emoji" alias="book" fallback-src="https://github.githubassets.com/images/icons/emoji/unicode/1f4d6.png">📖</g-emoji></a></td>
+        </tr>
+    </tbody>
+</table>
 
 ## Requirements
 
@@ -33,6 +54,11 @@ This is a Python API built with FastAPI and managed with Poetry.
     poetry env activate
     ```
 
+    ```bash
+    # other posible command to activate the virtual enviroment
+    Invoke-Expression (poetry env activate)
+    ```
+
     This command will return the path in which the virtual environment is activated, copy and paste that path into the terminal.
 
     If you have multiple environments for your project, you might need to specify the environment name (e.g., `poetry env activate my-env-name`). You can list available environments with `poetry env list`.
@@ -54,6 +80,11 @@ This is a Python API built with FastAPI and managed with Poetry.
 
     ```bash
     uvicorn src.main:app --reload
+    ```
+
+    ```bash
+    # Run the app in debug mode
+    uvicorn src.main:app --reload --log-level debug
     ```
 
     Replace `src.main:app` if your application entry point is different. The `--reload` flag enables auto-reloading when code changes, which is useful for development.
