@@ -14,11 +14,12 @@ class Reservation(AggregateRoot["ReservationIdVo"]):
         id: ReservationIdVo,
         date_end: ReservationDateEndVo,
         date_start: ReservationDateStartVo,
-        client_id: UserIdVo
+        client_id: UserIdVo,
+        status: ReservationStatusVo
     ):
         super().__init__(id)
         self.__client_id = client_id
-        self.__status = ReservationStatusVo("pendiente")
+        self.__status = status
         self.__date_end = date_end
         self.__date_start = date_start
         self.validate_state()

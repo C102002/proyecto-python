@@ -16,10 +16,10 @@ class OrmReservationCommandRepository(IReservationCommandRepository):
         try:
             orm = OrmUserModel(
                 id=id,
-                dateEnd=entry.date_end.reservation_date_end,
-                dateStart=entry.date_start.reservation_date_start,
+                date_end=entry.date_end.reservation_date_end,
+                date_start=entry.date_start.reservation_date_start,
                 status=entry.status.reservation_status,
-                clientID=entry.__client_id.user_id
+                client_id=entry.__client_id.user_id
             )
             
             self.session.add(orm)
@@ -41,11 +41,9 @@ class OrmReservationCommandRepository(IReservationCommandRepository):
             if to_update is None:
                 err = ReservationNotFoundException()
                 return Result.fail(err)
-
-            to_update.dateStart = entry.date_start
-            to_update.dateEnd = entry.date_end
+            to_update.date_start = entry.date_start
+            to_update.date_end = entry.date_end
             to_update.status = entry.status
-            
             self.session.add(to_update)
             await self.session.commit()
             return Result.success(entry)
