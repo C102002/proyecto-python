@@ -65,4 +65,4 @@ class Reservation(AggregateRoot["ReservationIdVo"]):
 
     @property
     def cliend_id(self) -> UserIdVo:
-        return self.cliend_id
+        return self.__cliend_id

@@ -1,6 +1,6 @@
 
 Reservas
-    Agendar /CAncelar con validacion de horarios y capacidad
+    Agendar/Cancelar con validacion de horarios y capacidad
     MAximo 1 reserva por cliente por horarios
     REGLAS: solapamiento de horarios, limites de platos preordenados
 
