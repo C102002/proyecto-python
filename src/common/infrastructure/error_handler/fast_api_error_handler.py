@@ -29,6 +29,8 @@ class FastApiErrorHandler(IErrorHandler):
 
         if app_type == ExceptionApplicationType.CONFLICT:
             code = status.HTTP_409_CONFLICT
+        elif app_type == ExceptionApplicationType.FORBIDDEN:
+            code = status.HTTP_403_FORBIDDEN
         else:
             return HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=message)
         

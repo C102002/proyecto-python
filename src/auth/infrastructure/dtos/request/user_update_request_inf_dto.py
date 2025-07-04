@@ -5,3 +5,6 @@ class UserUpdateRequestInfDto(BaseModel):
     email: EmailStr | None = Field(description="User email", default=None)
     name: str | None = Field(description="User name", default=None)
     password: str | None = Field(description="User password", default=None)
+
+    class Config:
+        extra = "forbid"
