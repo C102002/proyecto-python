@@ -1,6 +1,4 @@
-from sqlmodel import Enum
-
-
+from enum import Enum
 class TableLocationEnum(Enum):
     TERRAZA = "terraza"
     INTERIOR = "interior"

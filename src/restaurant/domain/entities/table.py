@@ -35,6 +35,14 @@ class Table(EntityRoot["TableNumberId"]):
         return self.__capacity
 
     @property
-    def location(self) -> RestaurantLocationVo:
+    def location(self) -> TableLocationVo:
         return self.__location
+    
+    def __repr__(self):
+        return (
+            f"Table("
+            f"id={self.id!r}, "
+            f"capacity={self.capacity!r}, "
+            f"location={self.location!r})"
+        )
     
