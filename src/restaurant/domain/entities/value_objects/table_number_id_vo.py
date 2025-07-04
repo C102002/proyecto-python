@@ -15,3 +15,6 @@ class TableNumberId(ValueObjectRoot["TableNumberId"]):
     @property
     def table_number_id(self) -> int:
         return self.__table_number_id
+    
+    def __repr__(self) -> str:
+        return f"{self.__class__.__name__}(table_number_id={self.__table_number_id})"

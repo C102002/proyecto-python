@@ -16,3 +16,6 @@ class TableCapacityVo(ValueObjectRoot["TableCapacityVo"]):
     @property
     def capacity(self) -> int:
         return self.__capacity
+
+    def __repr__(self) -> str:
+        return f"{self.__class__.__name__}(capacity={self.__capacity})"

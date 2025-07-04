@@ -71,4 +71,8 @@ class Restaurant(AggregateRoot["RestaurantIdVo"]):
     def closing_time(self) -> RestaurantClosingTimeVo:
         return self.__closing_time
     
+    @property
+    def tables(self) -> List[Table]:
+        return self.__tables
+    
     # TODO: Mesas creo que son entities
