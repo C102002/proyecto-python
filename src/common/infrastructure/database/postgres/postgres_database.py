@@ -1,6 +1,6 @@
 from sqlmodel import SQLModel
 from sqlmodel.ext.asyncio.session import AsyncSession 
-from sqlalchemy.ext.asyncio import create_async_engine
+from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 from typing import AsyncGenerator
 import os
 from dotenv import load_dotenv
@@ -12,14 +12,19 @@ load_dotenv()
 class PostgresDatabase:
     _url: str | None = None
     _engine = None
-    _async_session_factory = None
+    _async_session_factory: async_sessionmaker[AsyncSession] | None = None
 
     def __init__(self):
         if PostgresDatabase._url is None:
-            PostgresDatabase._url = os.getenv("DATABASE_URL")
+            env = os.getenv("ENVIRONMENT")
+            print(env)
+            if (env == "test"):
+                PostgresDatabase._url = os.getenv("DATABASE_URL_TEST")
+            else:
+                PostgresDatabase._url = os.getenv("DATABASE_URL")
             if PostgresDatabase._url is None:
-                raise ValueError("La variable de entorno DATABASE_URL no está definida")
-        
+                raise ValueError("La variable de entorno DATABASE_URL o DATABASE_URL_TEST no está definida")
+
         if PostgresDatabase._engine is None:
             PostgresDatabase._engine = create_async_engine(PostgresDatabase._url, echo=False, pool_pre_ping=True)
             
