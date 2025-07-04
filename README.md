@@ -59,6 +59,11 @@ This is a Python API built with FastAPI and managed with Poetry.
     Invoke-Expression (poetry env activate)
     ```
 
+    ```bash
+    # In arch 
+    source $(poetry env info --path)/bin/activate
+    ```
+
     This command will return the path in which the virtual environment is activated, copy and paste that path into the terminal.
 
     If you have multiple environments for your project, you might need to specify the environment name (e.g., `poetry env activate my-env-name`). You can list available environments with `poetry env list`.

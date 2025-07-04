@@ -1,0 +1,27 @@
+
+Reservas
+    Agendar /CAncelar con validacion de horarios y capacidad
+    MAximo 1 reserva por cliente por horarios
+    REGLAS: solapamiento de horarios, limites de platos preordenados
+
+    id
+    estado 
+    // pendiente(inicio), confirmada(opcional), cancelada, completada (despues de la fecha/hora)
+    fechaReserva
+    fechaFInREserva
+    idCLiente
+
+Menu
+    Pre ordenar platos al reservar
+    SIN precios o ingredientes en el menu
+    REGLA: platos unicos por restaurante
+
+// cliente
+    CREAR/ CANCELAR SUS RESERVAS
+    PREORDENAR MEnu
+    VER SUS RESERVAS ACTIVAS
+
+// ADMIN
+    VER TODAS LAS RESERVAS
+    CANCELAR CUALQUIER RESERVAS
+    FILTRAR POR FECHA/RESTAURANTE
