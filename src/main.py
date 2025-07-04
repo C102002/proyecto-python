@@ -7,6 +7,7 @@ from src.auth.infrastructure.controllers.login.user_login import UserLoginContro
 from src.auth.infrastructure.controllers.update.user_update import UserUpdateController
 from src.restaurant.infraestructure.controllers.create_restaurant.create_restaurant import CreateRestaurantController
 from src.restaurant.infraestructure.controllers.get_all_restaurants.get_all_restaurant import GetAllRestaurantController
+from src.menu.infrastructure.routers import menu_router
 import faulthandler
 faulthandler.enable()           # colócalo en tu módulo principal, p.ej. src/main.py
 
@@ -14,10 +15,10 @@ faulthandler.enable()           # colócalo en tu módulo principal, p.ej. src/m
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Esta llamada asegura que el _engine y _async_session_factory se inicialicen
-    PostgresDatabase() 
+    PostgresDatabase()
     # Para llamar a create_db_and_tables, necesitamos una instancia.
     # Puede ser la misma que la de arriba, o una nueva (que usará el motor ya inicializado).
-    initial_db_instance = PostgresDatabase() 
+    initial_db_instance = PostgresDatabase()
     await initial_db_instance.create_db_and_tables()
     print("Base de datos y tablas creadas.")
     yield
@@ -41,3 +42,6 @@ UserLoginController(app)
 # Restaurants Controllers
 CreateRestaurantController(app)
 GetAllRestaurantController(app)
+
+# Menu Router
+app.include_router(menu_router.router, tags=["menu"])
