@@ -32,12 +32,12 @@ def remove_dish_from_menu(dish_id: str, menu_service: MenuService = Depends(get_
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
 
-@router.get("/dishes/{restaurant_id}", response_model=MenuResponseDto)
-def get_menu(restaurant_id: str, menu_service: MenuService = Depends(get_menu_service)):
+@router.get("/dishes/{restaurant_id}", response_model=List[DishResponseDto])
+def get_dishes_by_restaurant(restaurant_id: str, menu_service: MenuService = Depends(get_menu_service)):
     try:
         menu = menu_service.get_menu_by_restaurant_id(restaurant_id)
         if not menu:
-            raise HTTPException(status_code=404, detail="Menu not found")
-        return MenuResponseDto.from_domain(menu)
+            return []
+        return [DishResponseDto.from_domain(dish) for dish in menu.dishes]
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))

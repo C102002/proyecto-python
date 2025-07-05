@@ -11,6 +11,7 @@ from src.restaurant.infraestructure.controllers.get_all_restaurant.get_all_resta
 import faulthandler
 
 from src.restaurant.infraestructure.controllers.get_restaurant_by_id.get_restaurant_by_id import GetRestaurantByIdController
+from src.menu.infrastructure.controllers.menu_controller import MenuController
 faulthandler.enable()           # colócalo en tu módulo principal, p.ej. src/main.py
 
 
@@ -46,3 +47,6 @@ CreateRestaurantController(app)
 GetAllRestaurantController(app)
 GetRestaurantByIdController(app)
 DeleteRestaurantByIdController(app)
+
+# Menu Controllers
+MenuController(app)
