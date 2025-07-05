@@ -23,12 +23,14 @@ class CreateReservationController:
     async def get_service(self, postgres_session: AsyncSession = Depends(GetPostgresqlSession())):
         query_repository = OrmReservationQueryRepository(postgres_session)
         command_repository = OrmReservationCommandRepository(postgres_session)
+        #query_restau = OrmRestaurantQueryRepository(postgres_session)
         id_generator = UuidGenerator()
         
         service = CreateReservationService(
-            query_repository=query_repository,
-            command_repository=command_repository,
-            id_generator=id_generator
+            query_reser=query_repository,
+            command_reser=command_repository,
+            id_generator=id_generator,
+            #query_restau=query_restau
         )
         return service
 
@@ -39,7 +41,7 @@ class CreateReservationController:
             status_code=status.HTTP_200_OK,
             summary="Create a reservation",
             description=("Crea una reservacion"),
-            response_description="Devuelve un ID"
+            response_description="Devuelve 201"
         )
         async def create(
             entry: CreateReservationRequestController, 

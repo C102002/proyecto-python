@@ -5,6 +5,8 @@ from src.reservation.domain.domain_exceptions.invalid_reservation_exception impo
 from src.reservation.domain.value_objects.reservation_date_end_vo import ReservationDateEndVo
 from src.reservation.domain.value_objects.reservation_date_start_vo import ReservationDateStartVo
 from src.reservation.domain.value_objects.reservation_status_vo import ReservationStatusVo
+from src.restaurant.domain.entities.value_objects.table_number_id_vo import TableNumberId
+from src.restaurant.domain.value_objects.restaurant_id_vo import RestaurantIdVo
 from ..value_objects.reservation_id_vo import ReservationIdVo
 
 class Reservation(AggregateRoot["ReservationIdVo"]):
@@ -14,21 +16,25 @@ class Reservation(AggregateRoot["ReservationIdVo"]):
         id: ReservationIdVo,
         date_end: ReservationDateEndVo,
         date_start: ReservationDateStartVo,
+        status: ReservationStatusVo,
         client_id: UserIdVo,
-        status: ReservationStatusVo
+        table_number_id: TableNumberId,
+        restaurant_id: RestaurantIdVo
     ):
         super().__init__(id)
         self.__client_id = client_id
         self.__status = status
         self.__date_end = date_end
         self.__date_start = date_start
+        self.__table_number_id = table_number_id
+        self.__restaurant_id = restaurant_id
         self.validate_state()
 
     def when(self, event: DomainEventRoot) -> None:
         pass
 
     def validate_state(self) -> None:
-        if not self._id or not self.__client_id or not self.__date_end or not self.__date_start or not self.__status is None:
+        if not self._id or not self.__client_id or not self.__date_end or not self.__date_start or not self.__status or not self.__table_number_id or not self.__restaurant_id is None:
             raise InvalidReservationException()
         
         if self.__date_end.reservation_date_end < self.__date_start.reservation_date_start:
@@ -45,13 +51,7 @@ class Reservation(AggregateRoot["ReservationIdVo"]):
 
     def update_status_completada(self) -> None:
         self.__status = ReservationStatusVo("completada")
-        
-    def update_date_end(self, date: ReservationDateEndVo) -> None:
-        self.__date_end = date
-
-    def update_date_start(self, date: ReservationDateStartVo) -> None:
-        self.__date_start = date
-
+    
     @property
     def date_start(self) -> ReservationDateStartVo:
         return self.__date_start
@@ -66,4 +66,12 @@ class Reservation(AggregateRoot["ReservationIdVo"]):
 
     @property
     def cliend_id(self) -> UserIdVo:
-        return self.__cliend_id
+        return self.__client_id
+
+    @property
+    def restaurant_id(self) -> RestaurantIdVo:
+        return self.__restaurant_id
+
+    @property
+    def table_number_id(self) -> TableNumberId:
+        return self.__table_number_id

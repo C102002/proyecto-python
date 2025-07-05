@@ -10,6 +10,8 @@ Reservas
     fechaReserva
     fechaFInREserva
     idCLiente
+    restaurantID
+    tableID
 
 Menu
     Pre ordenar platos al reservar

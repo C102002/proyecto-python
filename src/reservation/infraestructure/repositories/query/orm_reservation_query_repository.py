@@ -1,5 +1,5 @@
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, literal_column
+from sqlalchemy import and_, select, literal_column
 from src.auth.domain.value_objects.user_id_vo import UserIdVo
 from src.common.utils import Result
 from src.common.infrastructure import InfrastructureException
@@ -36,6 +36,30 @@ class OrmReservationQueryRepository(IReservationQueryRepository):
         except Exception as e:
             return Result.fail(InfrastructureException(str(e)))
         
+    async def get_by_date(self, date_start: str, date_end: str) -> Result[Reservation]:
+        try:
+            result = await self.session.execute(
+                select(OrmReservationModel).where(
+                    and_(
+                        literal_column("dateStart") == date_start,
+                        literal_column("dateEnd") == date_end
+                    )
+                )
+            )
+            orm = result.scalars().first()
+            if orm is None:
+                return Result.fail(ReservationNotFoundException())
+            reser = Reservation( 
+                id=ReservationIdVo(orm.id),
+                status=ReservationStatusVo(orm.status),
+                date_start=ReservationDateStartVo(orm.date_start),
+                date_end=ReservationDateEndVo(orm.date_end),
+                client_id=UserIdVo(orm.client_id)
+            )
+            return Result.success(reser)
+        except Exception as e:
+            return Result.fail(InfrastructureException(str(e)))
+
 
     async def get_active_by_client_id(self, client_id: str) -> Result[list[Reservation]]:
         try:
