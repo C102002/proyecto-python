@@ -1,7 +1,5 @@
-from typing import List
 from src.common.application import IService
 from src.common.utils import Result
-from src.restaurant.application.dtos.response.create_table_response_dto import CreateTableResponseDTO
 from src.restaurant.application.repositories.command.restaurant_command_repository import IRestaurantCommandRepository
 from src.restaurant.application.repositories.query.restaurant_query_repository import IRestaurantQueryRepository
 from ..dtos.request.delete_restaurant_by_id_request_dto import DeleteRestaurantByIdRequestDTO

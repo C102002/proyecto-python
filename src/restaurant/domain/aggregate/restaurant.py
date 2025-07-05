@@ -39,9 +39,13 @@ class Restaurant(AggregateRoot["RestaurantIdVo"]):
         
     def update_location(self, location: RestaurantLocationVo) -> None:
         self.__location = location
+        self.validate_state()
+
 
     def update_name(self, name: RestaurantNameVo) -> None:
         self.__name = name
+        self.validate_state()
+
 
     def update_opening_time(self, opening_time: RestaurantOpeningTimeVo) -> None:
         self.__opening_time = opening_time

@@ -1,6 +1,6 @@
 from typing import List
 
-from sqlalchemy import delete, insert
+from sqlalchemy import delete, insert, select
 from src.common.infrastructure.infrastructure_exception.enum.infraestructure_exception_type import ExceptionInfrastructureType
 from src.common.utils import Result
 from src.common.infrastructure import InfrastructureException
@@ -29,8 +29,6 @@ class OrmRestaurantCommandRepository(IRestaurantCommandRepository):
                         restaurant_id=restaurant.id.restaurant_id
                     )
                 )
-            print(f"orm_tables:{orm_tables}")
-            # Continuar aca
             orm_restaurant = OrmRestaurantModel(
                 id=restaurant.id.restaurant_id,
                 lat=restaurant.location.lat,
@@ -122,6 +120,43 @@ class OrmRestaurantCommandRepository(IRestaurantCommandRepository):
 
         except Exception as e:
             # Cualquier otro error de infraestructura
+            await self.session.rollback()
+            return Result.fail(
+                InfrastructureException(
+                    str(e),
+                    ExceptionInfrastructureType.BAD_REQUEST
+                )
+            )
+            
+    async def update_restaurant(self, restaurant: Restaurant) -> Result[Restaurant]:
+        try:
+            
+            stmt = select(OrmRestaurantModel).where(
+                OrmRestaurantModel.id == restaurant.id.restaurant_id
+            )
+            result = await self.session.execute(stmt)
+            orm_rest = result.scalar_one_or_none()
+
+            if orm_rest is None:
+                return Result.fail(
+                    InfrastructureException(
+                        "Restaurant not found",
+                        ExceptionInfrastructureType.NOT_FOUND
+                    )
+                )
+
+            orm_rest.name         = restaurant.name.name
+            orm_rest.lat          = restaurant.location.lat
+            orm_rest.lng          = restaurant.location.lng
+            orm_rest.opening_time = restaurant.opening_time.opening_time
+            orm_rest.closing_time = restaurant.closing_time.closing_time
+
+            self.session.add(orm_rest)
+            await self.session.commit()
+
+            return Result.success(restaurant)
+
+        except Exception as e:
             await self.session.rollback()
             return Result.fail(
                 InfrastructureException(

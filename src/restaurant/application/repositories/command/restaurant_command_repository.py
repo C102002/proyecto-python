@@ -20,3 +20,7 @@ class IRestaurantCommandRepository(ABC):
     @abstractmethod
     async def delete_table(self, data:DeleteTableByIdRequestDTO) -> Result[DeleteTableByIdRequestDTO]:
         pass
+    
+    @abstractmethod
+    async def update_restaurant(self, restaurant: Restaurant) -> Result[Restaurant]:
+        pass

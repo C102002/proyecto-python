@@ -21,10 +21,6 @@ class GetRestaurantByIdService(IService[GetRestaurantByIdRequestDTO, GetRestaura
         
         restaurant=response_repo.value
         
-        for tables in restaurant.tables:
-            print(f"table domain : {tables}")
-
-        
         return Result.success(
             GetRestaurantByIdResponseDTO(
                 id=restaurant.id.restaurant_id,

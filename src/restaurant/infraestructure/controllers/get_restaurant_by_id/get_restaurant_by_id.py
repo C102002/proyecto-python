@@ -49,9 +49,7 @@ class GetRestaurantByIdController:
             # Ejecuta la consulta por ID
             result = await decorated.execute(GetRestaurantByIdRequestDTO(restaurant_id))
             restaurant = result.value
-            
-            print(f"restaurant pepe:{restaurant}")
-            
+                        
             return GetRestaurantByIdResponseInfDTO(
                 id=restaurant.id,
                 lat=restaurant.lat,

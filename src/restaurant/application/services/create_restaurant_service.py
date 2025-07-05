@@ -34,7 +34,6 @@ class CreateRestaurantService(IService[CreateRestaurantRequestDTO, CreateRestaur
             location = TableLocationVo(tbl_dto.location)
             domain_tables.append(Table(id=table_id,capacity=capacity,location=location))
         
-        print(domain_tables)
         
         restaurant=Restaurant(
             RestaurantIdVo(self.id_generator.generate_id()),
