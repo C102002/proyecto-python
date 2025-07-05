@@ -1,15 +1,11 @@
 from fastapi import FastAPI, Depends, status, APIRouter
 from src.common.infrastructure.middlewares.get_postgresql_session import GetPostgresqlSession
 from src.reservation.application.dtos.request.cancel_reservation_request_dto import CancelReservationRequest
-from src.reservation.application.dtos.request.create_reservation_request_dto import CreateReservationRequest
 from src.common.application.aspects.exception_decorator.exception_decorator import ExceptionDecorator
 from sqlalchemy.ext.asyncio import AsyncSession
 from src.common.infrastructure.error_handler.fast_api_error_handler import FastApiErrorHandler
-from src.common.infrastructure.id_generator.uuid_generator import UuidGenerator
 from src.reservation.application.services.cancel_reservation_service import CancelReservationService
-from src.reservation.application.services.create_reservation_service import CreateReservationService
 from src.reservation.infraestructure.dtos.cancel_reservation_request import CancelReservationRequestController
-from src.reservation.infraestructure.dtos.create_reservation_request import CreateReservationRequestController
 from src.reservation.infraestructure.repositories.command.orm_reservation_command_repository import OrmReservationCommandRepository
 from src.reservation.infraestructure.repositories.query.orm_reservation_query_repository import OrmReservationQueryRepository
 
@@ -17,7 +13,6 @@ reservation_router = APIRouter(
     prefix="/reservation",
     tags=["Reservation"],
 )
-
 class CancelReservationController:
     def __init__(self, app: FastAPI):
         self.app = app
@@ -27,11 +22,9 @@ class CancelReservationController:
     async def get_service(self, postgres_session: AsyncSession = Depends(GetPostgresqlSession())):
         query_repository = OrmReservationQueryRepository(postgres_session)
         command_repository = OrmReservationCommandRepository(postgres_session)
-        #query_restau = OrmRestaurantQueryRepository(postgres_session)
         service = CancelReservationService(
             query_reser=query_repository,
             command_reser=command_repository,
-            #query_restau=query_restau
         )
         return service
 
@@ -52,6 +45,9 @@ class CancelReservationController:
                 raise RuntimeError("CancelReservationService not initialized. Did you forget to call init()?")
             service = ExceptionDecorator(service, FastApiErrorHandler())
             await service.execute(
-                CancelReservationRequest()
+                CancelReservationRequest(
+                    reservation_id = entry.reservation_router,
+                    client_id = entry.client_id
+                )
             )
             return None

@@ -54,7 +54,9 @@ class CreateReservationController:
                 CreateReservationRequest(
                     client_id=entry.client_id,
                     date_start=entry.date_start,
-                    date_end=entry.date_end
+                    date_end=entry.date_end,
+                    restaurant_id=entry.restaurant_id,
+                    table_number_id=entry.table_number_id,
                 )
             )
             return None

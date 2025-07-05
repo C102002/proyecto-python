@@ -19,7 +19,7 @@ class IReservationQueryRepository(ABC):
         pass
 
     @abstractmethod
-    async def get_all_by_date_restaurant(self, date_start: time, restaurant_id: str, reservation_date: date,) -> Result[list[Reservation]]:
+    async def get_all_by_date_restaurant(self, restaurant_id: str, reservation_date: date,) -> Result[list[Reservation]]:
         pass
 
     @abstractmethod

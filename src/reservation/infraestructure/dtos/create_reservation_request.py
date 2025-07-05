@@ -5,4 +5,5 @@ class CreateReservationRequestController(BaseModel):
     date_end: time = Field(...)
     client_id: str = Field(...)
     reservation_date: date = Field(...)
-    
+    table_number_id: str = Field(...)
+    restaurant_id: str = Field(...)

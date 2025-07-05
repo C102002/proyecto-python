@@ -5,7 +5,6 @@ from src.reservation.application.dtos.request.create_reservation_request_dto imp
 from src.reservation.application.dtos.response.create_reservation_response_dto import CreateReservationResponse
 from src.reservation.application.repositories.command.reservation_command_repository import IReservationCommandRepository
 from src.reservation.application.repositories.query.reservation_query_repository import IReservationQueryRepository
-from src.restaurant.application.repositories.query.restaurant_query_repository import IRestaurantQueryRepository
 
 class CreateReservationService(IService[CreateReservationRequest, CreateReservationResponse]):
 
