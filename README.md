@@ -111,6 +111,40 @@ This project includes a `Dockerfile` and `docker-compose.yml` for easy container
     docker-compose down
     ```
 
+### Running the test with pytest
+#### 1. 🧪 Run Tests with pytest
+
+```bash
+# In the root of the project
+pytest --cov=src --cov-report=html:docs/coverage_html
+```
+
+#### 2. 📊 View Test Coverage Summary
+
+To see the summary of the test, you must open the file index.html inside the docs folder in your preference browser
+
+* 🍎 macOS
+```bash
+bash open docs/coverage_html/index.html
+```
+
+* 🪟 Windows (PowerShell)
+
+```bash
+start docs/coverage_html\index.html
+```
+
+* 🐧 Linux
+  
+```bash
+xdg-open docs/coverage_html/index.html
+```
+
+Example of what you shold see
+
+![example of test results](./public/images/test_summary.png)
+
+
 ## Project Structure
 
 ```
