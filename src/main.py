@@ -5,6 +5,7 @@ from contextlib import asynccontextmanager
 from src.auth.infrastructure.controllers.register.user_register import UserRegisterController
 from src.auth.infrastructure.controllers.login.user_login import UserLoginController
 from src.auth.infrastructure.controllers.update.user_update import UserUpdateController
+from src.reservation.infraestructure.controllers.create_reservation import CreateReservationController
 from src.restaurant.infraestructure.controllers.create_restaurant.create_restaurant import CreateRestaurantController
 from src.restaurant.infraestructure.controllers.get_all_restaurants.get_all_restaurant import GetAllRestaurantController
 import faulthandler
@@ -41,3 +42,6 @@ UserLoginController(app)
 # Restaurants Controllers
 CreateRestaurantController(app)
 GetAllRestaurantController(app)
+
+# Reservation Controllers
+CreateReservationController(app)

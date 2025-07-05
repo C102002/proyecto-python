@@ -7,7 +7,7 @@ class IReservationQueryRepository(ABC):
     async def get_by_id(self, id: str) -> Result[Reservation]:
         pass
 
-    @list[abstractmethod]
+    @abstractmethod
     async def get_active_by_client_id(self, client_id: str) -> Result[list[Reservation]]:
         pass
 

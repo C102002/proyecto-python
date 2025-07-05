@@ -1,12 +1,23 @@
 from src.common.application import IService
+from src.common.application.id_generator.id_generator import IIdGenerator
 from src.common.utils import Result
 from src.reservation.application.dtos.request.create_reservation_request_dto import CreateReservationRequest
 from src.reservation.application.dtos.response.create_reservation_response_dto import CreateReservationResponse
+from src.reservation.application.repositories.command.reservation_command_repository import IReservationCommandRepository
+from src.reservation.application.repositories.query.reservation_query_repository import IReservationQueryRepository
 
 class CreateReservationService(IService[CreateReservationRequest, CreateReservationResponse]):
 
-    def __init__(self):
+    def __init__(
+        self,    
+        query_repository: IReservationQueryRepository, 
+        command_repository: IReservationCommandRepository,
+        id_generator: IIdGenerator
+        ):
         super().__init__()
+        self.query_repository = query_repository
+        self.command_repository = command_repository
+        self.id_generator = id_generator
         
     async def execute(self, value: CreateReservationRequest) -> Result[CreateReservationResponse]:
         
