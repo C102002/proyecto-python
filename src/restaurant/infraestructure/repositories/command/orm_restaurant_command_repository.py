@@ -1,6 +1,6 @@
 from typing import List
 
-from sqlalchemy import delete
+from sqlalchemy import delete, insert
 from src.common.infrastructure.infrastructure_exception.enum.infraestructure_exception_type import ExceptionInfrastructureType
 from src.common.utils import Result
 from src.common.infrastructure import InfrastructureException
@@ -9,6 +9,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from src.restaurant.application.dtos.request.delete_table_by_id_request_dto import DeleteTableByIdRequestDTO
 from src.restaurant.application.repositories.command.restaurant_command_repository import IRestaurantCommandRepository
 from src.restaurant.domain.aggregate.restaurant import Restaurant
+from src.restaurant.domain.entities.table import Table
 from src.restaurant.infraestructure.models.orm_restaurant_model import OrmRestaurantModel
 from src.restaurant.infraestructure.models.orm_table_model import OrmTableModel
 
@@ -96,6 +97,36 @@ class OrmRestaurantCommandRepository(IRestaurantCommandRepository):
             return Result.success(data)
 
         except Exception as e:
-            print(f"error {e}")
             await self.session.rollback()
             return Result.fail(InfrastructureException(str(e),ExceptionInfrastructureType.BAD_REQUEST))
+        
+    async def add_table(
+        self, 
+        restaurant: Restaurant, 
+        table: Table
+    ) -> Result[Restaurant]:
+        try:
+            orm_data = {
+                "restaurant_id": restaurant.id.restaurant_id,
+                "number":        table.id.table_number_id,
+                "capacity":      table.capacity.capacity,
+                "location":      table.location.location.value
+            }
+
+            # 3) INSERT en BD
+            stmt = insert(OrmTableModel).values(**orm_data)
+            await self.session.execute(stmt)
+            await self.session.commit()
+
+            # 4) Devolver el agregado con éxito
+            return Result.success(restaurant)
+
+        except Exception as e:
+            # Cualquier otro error de infraestructura
+            await self.session.rollback()
+            return Result.fail(
+                InfrastructureException(
+                    str(e),
+                    ExceptionInfrastructureType.BAD_REQUEST
+                )
+            )

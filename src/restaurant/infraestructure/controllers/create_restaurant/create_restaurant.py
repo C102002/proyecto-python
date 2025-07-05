@@ -9,6 +9,7 @@ from src.common.infrastructure.id_generator.secuential_integer_generator import 
 from src.common.infrastructure.id_generator.uuid_generator import UuidGenerator
 from src.common.infrastructure.middlewares.get_postgresql_session import GetPostgresqlSession
 from src.restaurant.application.dtos.request.create_restaurant_request_dto import CreateRestaurantRequestDTO
+from src.restaurant.application.dtos.request.create_table_dto import CreateTableDTO
 from src.restaurant.application.dtos.request.create_table_request_dto import CreateTableRequestDTO
 from src.restaurant.application.services.create_restaurant_service import CreateRestaurantService
 from src.restaurant.infraestructure.dtos.response.create_restaurant_response_inf_dto import CreateRestaurantResponseInfDTO
@@ -62,7 +63,7 @@ class CreateRestaurantController:
                 opening_time=input_dto.opening_time,
                 closing_time=input_dto.closing_time,
                 tables=(
-                    [CreateTableRequestDTO(
+                    [CreateTableDTO(
                         number=tbl.number,
                         capacity=tbl.capacity,
                         location=tbl.location

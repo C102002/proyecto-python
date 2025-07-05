@@ -10,6 +10,10 @@ class IRestaurantCommandRepository(ABC):
         pass
     
     @abstractmethod
+    async def add_table(self, restaurant: Restaurant, table:Table) -> Result[Restaurant]:
+        pass
+    
+    @abstractmethod
     async def delete(self, restaurant: Restaurant) -> Result[Restaurant]:
         pass
     

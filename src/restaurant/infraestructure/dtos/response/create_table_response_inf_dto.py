@@ -23,5 +23,5 @@ class CreateTableResponseInfDTO(BaseModel):
     )
 
     class Config:
-        title = "CreateTableRequestDTO"
+        title = "CreateTableResponseInfDTO"
         use_enum_values = True

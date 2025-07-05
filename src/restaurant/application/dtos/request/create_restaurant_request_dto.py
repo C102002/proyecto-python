@@ -1,7 +1,7 @@
 from datetime import time
 from typing import List, Optional
 
-from src.restaurant.application.dtos.request.create_table_request_dto import CreateTableRequestDTO
+from src.restaurant.application.dtos.request.create_table_dto import CreateTableDTO
 
 
 
@@ -13,7 +13,7 @@ class CreateRestaurantRequestDTO:
         name: str,
         opening_time: time,
         closing_time: time,
-        tables: Optional[List[CreateTableRequestDTO]] = None,
+        tables: Optional[List[CreateTableDTO]] = None,
     ):
         self.lat = lat
         self.lng = lng
