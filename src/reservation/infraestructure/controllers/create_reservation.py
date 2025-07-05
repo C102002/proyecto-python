@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Depends, status
+from fastapi import FastAPI, Depends, status, APIRouter
 from src.common.infrastructure.middlewares.get_postgresql_session import GetPostgresqlSession
 from src.reservation.application.dtos.request.create_reservation_request_dto import CreateReservationRequest
 from src.common.application.aspects.exception_decorator.exception_decorator import ExceptionDecorator
@@ -6,10 +6,14 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from src.common.infrastructure.error_handler.fast_api_error_handler import FastApiErrorHandler
 from src.common.infrastructure.id_generator.uuid_generator import UuidGenerator
 from src.reservation.application.services.create_reservation_service import CreateReservationService
+from src.reservation.infraestructure.dtos.create_reservation_request import CreateReservationRequestController
 from src.reservation.infraestructure.repositories.command.orm_reservation_command_repository import OrmReservationCommandRepository
 from src.reservation.infraestructure.repositories.query.orm_reservation_query_repository import OrmReservationQueryRepository
-from src.reservation.infraestructure.routers import reservation_router
 
+reservation_router = APIRouter(
+    prefix="/reservation",
+    tags=["Reservation"],
+)
 class CreateReservationController:
     def __init__(self, app: FastAPI):
         self.app = app
@@ -38,11 +42,17 @@ class CreateReservationController:
             response_description="Devuelve un ID"
         )
         async def create(
-            entry: CreateReservationRequest, 
+            entry: CreateReservationRequestController, 
             service: CreateReservationService = Depends(self.get_service)
             ):
             if service is None:
                 raise RuntimeError("CreateReservationService not initialized. Did you forget to call init()?")
             service = ExceptionDecorator(service, FastApiErrorHandler())
-            response = await service.execute(entry)
+            await service.execute(
+                CreateReservationRequest(
+                    client_id=entry.client_id,
+                    date_start=entry.date_start,
+                    date_end=entry.date_end
+                )
+            )
             return None

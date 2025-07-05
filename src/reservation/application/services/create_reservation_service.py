@@ -32,6 +32,6 @@ class CreateReservationService(IService[CreateReservationRequest, CreateReservat
         # Los platos deben pertenecer al menu udel restaurante de la mesa reservada
         
         
-        response = CreateReservationResponse()
+        response = CreateReservationResponse(id=value.client_id)
         return Result.success(response)
 
