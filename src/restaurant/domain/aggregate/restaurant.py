@@ -2,8 +2,10 @@ from typing import List
 from src.common.domain.domain_event.domain_event_root import DomainEventRoot
 from src.common.domain import AggregateRoot
 from src.restaurant.domain.domain_exceptions.invalid_restaurant_delete_exception import InvalidRestaurantDeleteException
+from src.restaurant.domain.domain_exceptions.invalid_table_delete_exception import InvalidTableDeleteException
 from src.restaurant.domain.domain_exceptions.invalid_table_number_id import InvalidTableNumberIdException
 from src.restaurant.domain.entities.table import Table
+from src.restaurant.domain.entities.value_objects.table_number_id_vo import TableNumberId
 from ...domain.domain_exceptions.invalid_restaurant_closing_greater_opening_exception import InvalidRestaurantClosingGreaterOpeningException
 from ...domain.domain_exceptions.invalid_restaurant_exception import InvalidRestaurantException
 from ...domain.value_objects.restaurant_closing_time_vo import RestaurantClosingTimeVo
@@ -56,6 +58,20 @@ class Restaurant(AggregateRoot["RestaurantIdVo"]):
                 
         self.__tables.append(table)
         self.validate_state()
+        
+    def delete_table(self, table_id: TableNumberId) -> Table:
+        """
+        Remove the given table from this restaurant.
+        Raises InvalidTableNumberIdException if not found.
+        """
+        # Try to find the table in the list
+        for idx, domain_table in enumerate(self.__tables):
+            if domain_table.id.equals(table_id):
+                # Remove it and re-validate the aggregate
+                table_delete = self.__tables.pop(idx)
+                self.validate_state()
+                return table_delete
+        raise InvalidTableDeleteException(table_id.table_number_id)
         
     def delete(self) -> None:
         if len(self.tables) != 0:            

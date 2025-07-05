@@ -1,4 +1,3 @@
-# app/controllers/delete_restaurant_by_id_controller.py
 from fastapi import Depends, FastAPI, Path, status
 from sqlalchemy.ext.asyncio import AsyncSession
 

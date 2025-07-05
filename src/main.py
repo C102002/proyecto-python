@@ -7,6 +7,7 @@ from src.auth.infrastructure.controllers.login.user_login import UserLoginContro
 from src.auth.infrastructure.controllers.update.user_update import UserUpdateController
 from src.restaurant.infraestructure.controllers.create_restaurant.create_restaurant import CreateRestaurantController
 from src.restaurant.infraestructure.controllers.delete_restaurant_by_id.delete_restaurant_by_id import DeleteRestaurantByIdController
+from src.restaurant.infraestructure.controllers.delete_table_by_id.delete_table_by_id import DeleteTableByIdController
 from src.restaurant.infraestructure.controllers.get_all_restaurant.get_all_restaurant import GetAllRestaurantController
 import faulthandler
 
@@ -46,3 +47,6 @@ CreateRestaurantController(app)
 GetAllRestaurantController(app)
 GetRestaurantByIdController(app)
 DeleteRestaurantByIdController(app)
+
+# Table Controllers
+DeleteTableByIdController(app)

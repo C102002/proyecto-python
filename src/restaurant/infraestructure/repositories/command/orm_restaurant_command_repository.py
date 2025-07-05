@@ -1,9 +1,12 @@
 from typing import List
+
+from sqlalchemy import delete
 from src.common.infrastructure.infrastructure_exception.enum.infraestructure_exception_type import ExceptionInfrastructureType
 from src.common.utils import Result
 from src.common.infrastructure import InfrastructureException
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from src.restaurant.application.dtos.request.delete_table_by_id_request_dto import DeleteTableByIdRequestDTO
 from src.restaurant.application.repositories.command.restaurant_command_repository import IRestaurantCommandRepository
 from src.restaurant.domain.aggregate.restaurant import Restaurant
 from src.restaurant.infraestructure.models.orm_restaurant_model import OrmRestaurantModel
@@ -68,3 +71,31 @@ class OrmRestaurantCommandRepository(IRestaurantCommandRepository):
             await self.session.rollback()
             err = InfrastructureException(str(e))
             return Result.fail(err)
+        
+    async def delete_table(
+        self,
+        data: DeleteTableByIdRequestDTO
+    ) -> Result[DeleteTableByIdRequestDTO]:
+        try:
+            stmt = delete(OrmTableModel).where(
+                OrmTableModel.restaurant_id == data.restaurant_id,
+                OrmTableModel.id        == data.table_id
+            )
+            result = await self.session.execute(stmt)
+
+            # Opcional: si esperas saber si realmente borró algo
+            if result.rowcount == 0:
+                return Result.fail(
+                    InfrastructureException(
+                        "Table not found",
+                        ExceptionInfrastructureType.NOT_FOUND
+                    )
+                )
+
+            await self.session.commit()
+            return Result.success(data)
+
+        except Exception as e:
+            print(f"error {e}")
+            await self.session.rollback()
+            return Result.fail(InfrastructureException(str(e),ExceptionInfrastructureType.BAD_REQUEST))
