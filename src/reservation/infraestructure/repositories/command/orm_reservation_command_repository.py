@@ -1,4 +1,3 @@
-from src.auth.infrastructure.models.orm_user_model import OrmUserModel
 from src.common.utils import Result
 from src.common.infrastructure import InfrastructureException
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -14,14 +13,16 @@ class OrmReservationCommandRepository(IReservationCommandRepository):
 
     async def save(self, entry: Reservation) -> Result[Reservation]:
         try:
-            orm = OrmUserModel(
-                id=id,
+            orm = OrmReservationModel(
+                id=entry._id.reservation_id,
                 date_end=entry.date_end.reservation_date_end,
                 date_start=entry.date_start.reservation_date_start,
                 status=entry.status.reservation_status,
-                client_id=entry.__client_id.user_id
+                client_id=entry.__client_id.user_id,
+                table_number_id = entry.__table_number_id.table_number_id,
+                restaurant_id=entry.__restaurant_id.__restaurant_id,
+                reservation_date=entry.__date.reservation_date_end
             )
-            
             self.session.add(orm)
             await self.session.commit()
             return Result.success(entry)
@@ -41,8 +42,6 @@ class OrmReservationCommandRepository(IReservationCommandRepository):
             if to_update is None:
                 err = ReservationNotFoundException()
                 return Result.fail(err)
-            to_update.date_start = entry.date_start
-            to_update.date_end = entry.date_end
             to_update.status = entry.status
             self.session.add(to_update)
             await self.session.commit()

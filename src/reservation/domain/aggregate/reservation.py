@@ -4,6 +4,7 @@ from src.common.domain import AggregateRoot
 from src.reservation.domain.domain_exceptions.invalid_reservation_exception import InvalidReservationException
 from src.reservation.domain.value_objects.reservation_date_end_vo import ReservationDateEndVo
 from src.reservation.domain.value_objects.reservation_date_start_vo import ReservationDateStartVo
+from src.reservation.domain.value_objects.reservation_date_vo import ReservationDateVo
 from src.reservation.domain.value_objects.reservation_status_vo import ReservationStatusVo
 from src.restaurant.domain.entities.value_objects.table_number_id_vo import TableNumberId
 from src.restaurant.domain.value_objects.restaurant_id_vo import RestaurantIdVo
@@ -16,6 +17,7 @@ class Reservation(AggregateRoot["ReservationIdVo"]):
         id: ReservationIdVo,
         date_end: ReservationDateEndVo,
         date_start: ReservationDateStartVo,
+        reservation_date: ReservationDateVo,
         status: ReservationStatusVo,
         client_id: UserIdVo,
         table_number_id: TableNumberId,
@@ -28,6 +30,7 @@ class Reservation(AggregateRoot["ReservationIdVo"]):
         self.__date_start = date_start
         self.__table_number_id = table_number_id
         self.__restaurant_id = restaurant_id
+        self.__date = reservation_date
         self.validate_state()
 
     def when(self, event: DomainEventRoot) -> None:
@@ -55,6 +58,10 @@ class Reservation(AggregateRoot["ReservationIdVo"]):
     @property
     def date_start(self) -> ReservationDateStartVo:
         return self.__date_start
+
+    @property
+    def date(self) -> ReservationDateVo:
+        return self.__date
 
     @property
     def date_end(self) -> ReservationDateEndVo:
