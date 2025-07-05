@@ -6,9 +6,11 @@ from src.auth.infrastructure.controllers.register.user_register import UserRegis
 from src.auth.infrastructure.controllers.login.user_login import UserLoginController
 from src.auth.infrastructure.controllers.update.user_update import UserUpdateController
 from src.restaurant.infraestructure.controllers.create_restaurant.create_restaurant import CreateRestaurantController
-from src.restaurant.infraestructure.controllers.get_all_restaurants.get_all_restaurant import GetAllRestaurantController
-from src.menu.infrastructure.routers import menu_router
+from src.restaurant.infraestructure.controllers.delete_restaurant_by_id.delete_restaurant_by_id import DeleteRestaurantByIdController
+from src.restaurant.infraestructure.controllers.get_all_restaurant.get_all_restaurant import GetAllRestaurantController
 import faulthandler
+
+from src.restaurant.infraestructure.controllers.get_restaurant_by_id.get_restaurant_by_id import GetRestaurantByIdController
 faulthandler.enable()           # colócalo en tu módulo principal, p.ej. src/main.py
 
 
@@ -42,6 +44,5 @@ UserLoginController(app)
 # Restaurants Controllers
 CreateRestaurantController(app)
 GetAllRestaurantController(app)
-
-# Menu Router
-app.include_router(menu_router.router, tags=["menu"])
+GetRestaurantByIdController(app)
+DeleteRestaurantByIdController(app)

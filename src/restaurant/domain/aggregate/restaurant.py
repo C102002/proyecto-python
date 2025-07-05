@@ -1,6 +1,7 @@
 from typing import List
 from src.common.domain.domain_event.domain_event_root import DomainEventRoot
 from src.common.domain import AggregateRoot
+from src.restaurant.domain.domain_exceptions.invalid_restaurant_delete_exception import InvalidRestaurantDeleteException
 from src.restaurant.domain.domain_exceptions.invalid_table_number_id import InvalidTableNumberIdException
 from src.restaurant.domain.entities.table import Table
 from ...domain.domain_exceptions.invalid_restaurant_closing_greater_opening_exception import InvalidRestaurantClosingGreaterOpeningException
@@ -31,7 +32,7 @@ class Restaurant(AggregateRoot["RestaurantIdVo"]):
         if not self._id or not self.__location or not self.__opening_time or not self.__closing_time or self.__tables is None:
             raise InvalidRestaurantException()
         
-        if self.closing_time.closing_time < self.opening_time.opening_time:
+        if self.closing_time.closing_time <= self.opening_time.opening_time:
             raise InvalidRestaurantClosingGreaterOpeningException(self.opening_time.opening_time,self.closing_time.closing_time)
         
     def update_location(self, location: RestaurantLocationVo) -> None:
@@ -55,6 +56,13 @@ class Restaurant(AggregateRoot["RestaurantIdVo"]):
                 
         self.__tables.append(table)
         self.validate_state()
+        
+    def delete(self) -> None:
+        if len(self.tables) != 0:            
+            raise InvalidRestaurantDeleteException(len(self.tables))
+        self.validate_state()
+
+        
     @property
     def name(self) -> RestaurantNameVo:
         return self.__name
