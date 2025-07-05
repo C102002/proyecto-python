@@ -8,6 +8,8 @@ from src.auth.infrastructure.controllers.update.user_update import UserUpdateCon
 from src.restaurant.infraestructure.controllers.create_restaurant.create_restaurant import CreateRestaurantController
 from src.restaurant.infraestructure.controllers.get_all_restaurant.get_all_restaurant import GetAllRestaurantController
 import faulthandler
+
+from src.restaurant.infraestructure.controllers.get_restaurant_by_id.get_restaurant_by_id import GetRestaurantByIdController
 faulthandler.enable()           # colócalo en tu módulo principal, p.ej. src/main.py
 
 
@@ -41,3 +43,4 @@ UserLoginController(app)
 # Restaurants Controllers
 CreateRestaurantController(app)
 GetAllRestaurantController(app)
+GetRestaurantByIdController(app)
