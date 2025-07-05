@@ -1,10 +1,12 @@
-from typing import List
+from typing import List, Optional
 from src.common.domain.domain_event.domain_event_root import DomainEventRoot
 from src.common.domain import AggregateRoot
 from src.restaurant.domain.domain_exceptions.invalid_restaurant_delete_exception import InvalidRestaurantDeleteException
 from src.restaurant.domain.domain_exceptions.invalid_table_delete_exception import InvalidTableDeleteException
 from src.restaurant.domain.domain_exceptions.invalid_table_number_id import InvalidTableNumberIdException
+from src.restaurant.domain.domain_exceptions.invalid_table_update_exception import InvalidTableUpdateException
 from src.restaurant.domain.entities.table import Table
+from src.restaurant.domain.entities.value_objects.table_capacity_vo import TableCapacityVo
 from src.restaurant.domain.entities.value_objects.table_number_id_vo import TableNumberId
 from ...domain.domain_exceptions.invalid_restaurant_closing_greater_opening_exception import InvalidRestaurantClosingGreaterOpeningException
 from ...domain.domain_exceptions.invalid_restaurant_exception import InvalidRestaurantException
@@ -82,6 +84,60 @@ class Restaurant(AggregateRoot["RestaurantIdVo"]):
         if len(self.tables) != 0:            
             raise InvalidRestaurantDeleteException(len(self.tables))
         self.validate_state()
+        
+    def update_table_location(self, table_id:TableNumberId, table_location:RestaurantLocationVo) -> Table:
+        
+        table_changed:Optional[Table]=None
+        
+        for domain_table in self.__tables:
+            #! domain_table.equals(table) OJO ESTE NO ME DA IGUAL que equals del id, ahi si me funciono
+            if domain_table.id.equals(table_id):
+                table_changed=domain_table
+                domain_table.update_location(table_location)
+        
+        if table_changed is None:
+            raise InvalidTableUpdateException(table_id.table_number_id)
+        
+        self.validate_state()
+        
+        return table_changed
+
+    def update_table_capacity(self, table_id:TableNumberId, table_capacity:TableCapacityVo) -> Table:
+        
+        table_changed:Optional[Table]=None
+        
+        for domain_table in self.__tables:
+            #! domain_table.equals(table) OJO ESTE NO ME DA IGUAL que equals del id, ahi si me funciono
+            if domain_table.id.equals(table_id):
+                table_changed=domain_table
+                domain_table.update_capacity(table_capacity)
+
+        if table_changed is None:
+            raise InvalidTableUpdateException(table_id.table_number_id)
+                
+        self.validate_state()
+        
+        return table_changed
+    
+    def update_table_number(self, old_id:TableNumberId, new_table_number:TableNumberId) -> Table:
+        
+        table_changed:Optional[Table]=None
+        
+        for domain_table in self.__tables:
+            # Valido si ya este ese id en el restaurante
+            if domain_table.id.equals(new_table_number):
+                raise InvalidTableNumberIdException(table_number_id=new_table_number.table_number_id)
+            
+            if domain_table.id.equals(old_id):
+                table_changed=domain_table
+                domain_table.update_number(new_table_number)
+
+        if table_changed is None:
+            raise InvalidTableUpdateException(old_id.table_number_id)
+
+        self.validate_state()
+                
+        return table_changed
 
         
     @property
@@ -104,4 +160,3 @@ class Restaurant(AggregateRoot["RestaurantIdVo"]):
     def tables(self) -> List[Table]:
         return self.__tables
     
-    # TODO: Mesas creo que son entities

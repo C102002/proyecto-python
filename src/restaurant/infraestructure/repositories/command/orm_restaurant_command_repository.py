@@ -1,6 +1,6 @@
 from typing import List
 
-from sqlalchemy import delete, insert, select
+from sqlalchemy import delete, insert, select, update
 from src.common.infrastructure.infrastructure_exception.enum.infraestructure_exception_type import ExceptionInfrastructureType
 from src.common.utils import Result
 from src.common.infrastructure import InfrastructureException
@@ -10,6 +10,8 @@ from src.restaurant.application.dtos.request.delete_table_by_id_request_dto impo
 from src.restaurant.application.repositories.command.restaurant_command_repository import IRestaurantCommandRepository
 from src.restaurant.domain.aggregate.restaurant import Restaurant
 from src.restaurant.domain.entities.table import Table
+from src.restaurant.domain.entities.value_objects.table_number_id_vo import TableNumberId
+from src.restaurant.domain.value_objects.restaurant_id_vo import RestaurantIdVo
 from src.restaurant.infraestructure.models.orm_restaurant_model import OrmRestaurantModel
 from src.restaurant.infraestructure.models.orm_table_model import OrmTableModel
 
@@ -163,4 +165,43 @@ class OrmRestaurantCommandRepository(IRestaurantCommandRepository):
                     str(e),
                     ExceptionInfrastructureType.BAD_REQUEST
                 )
+            )
+            
+    async def update_table(self, restaurant: Restaurant, table:Table,old_id:TableNumberId) -> Result[Restaurant]:
+        try:
+            stmt = (
+                update(OrmTableModel)
+                .where(
+                    OrmTableModel.restaurant_id == restaurant.id.restaurant_id,
+                    OrmTableModel.id == old_id.table_number_id
+                )
+                .values(
+                    id=table.id.table_number_id,
+                    capacity=table.capacity.capacity,
+                    location=table.location.location
+                )
+                .execution_options(synchronize_session="fetch")
+            )
+            result = await self.session.execute(stmt)
+            
+            print(f"result of updated {result.rowcount}")
+
+            # 2) Verificar que realmente actualizó 1 sola fila
+            if result.rowcount != 1:
+                await self.session.rollback()
+                return Result.fail(
+                    InfrastructureException(
+                        f"Expected to update 1 row, updated {result.rowcount}",
+                        ExceptionInfrastructureType.BAD_REQUEST
+                    )
+                )
+
+            await self.session.commit()
+            return Result.success(None)
+
+        except Exception as e:
+            print(f"error del update: {e}")
+            await self.session.rollback()
+            return Result.fail(
+                InfrastructureException(str(e), ExceptionInfrastructureType.BAD_REQUEST)
             )

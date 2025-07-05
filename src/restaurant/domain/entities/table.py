@@ -30,6 +30,10 @@ class Table(EntityRoot["TableNumberId"]):
         self.__capacity = capacity        
         self.validate_state()
 
+    def update_number(self, number: TableNumberId) -> None:
+        self._id = number        
+        self.validate_state()
+
     @property
     def capacity(self) -> TableCapacityVo:
         return self.__capacity

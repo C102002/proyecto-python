@@ -14,6 +14,7 @@ import faulthandler
 
 from src.restaurant.infraestructure.controllers.get_restaurant_by_id.get_restaurant_by_id import GetRestaurantByIdController
 from src.restaurant.infraestructure.controllers.update_restaurant.update_restaurant import UpdateRestaurantController
+from src.restaurant.infraestructure.controllers.update_table.update_restaurant import UpdateTableController
 faulthandler.enable()           # colócalo en tu módulo principal, p.ej. src/main.py
 
 
@@ -54,3 +55,4 @@ DeleteRestaurantByIdController(app)
 DeleteTableByIdController(app)
 CreateTableController(app)
 UpdateRestaurantController(app)
+UpdateTableController(app)
