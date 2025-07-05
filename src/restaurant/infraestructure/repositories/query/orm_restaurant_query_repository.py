@@ -41,6 +41,8 @@ class OrmRestaurantQueryRepository(IRestaurantQueryRepository):
             )
             tbl_res = await self.session.execute(q)
             orm_tables = tbl_res.scalars().all()
+            
+            print(f"orm_tables {orm_tables}")
                         
 
             restaurant = Restaurant(

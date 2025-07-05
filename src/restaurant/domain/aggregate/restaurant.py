@@ -53,7 +53,8 @@ class Restaurant(AggregateRoot["RestaurantIdVo"]):
     
     def add_table(self, table:Table) -> None:
         for domain_table in self.__tables:
-            if domain_table.equals(table):
+            #! domain_table.equals(table) OJO ESTE NO ME DA IGUAL que equals del id, ahi si me funciono
+            if domain_table.id.equals(table.id):
                 raise InvalidTableNumberIdException(table.id.table_number_id)
                 
         self.__tables.append(table)

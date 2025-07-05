@@ -1,4 +1,3 @@
-from typing import List
 from src.common.application import IService
 from src.common.utils import Result
 from src.restaurant.application.dtos.response.create_table_response_dto import CreateTableResponseDTO
@@ -21,6 +20,10 @@ class GetRestaurantByIdService(IService[GetRestaurantByIdRequestDTO, GetRestaura
             return Result.fail(response_repo.error)
         
         restaurant=response_repo.value
+        
+        for tables in restaurant.tables:
+            print(f"table domain : {tables}")
+
         
         return Result.success(
             GetRestaurantByIdResponseDTO(

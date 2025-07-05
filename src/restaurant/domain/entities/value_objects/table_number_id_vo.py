@@ -5,7 +5,7 @@ class TableNumberId(ValueObjectRoot["TableNumberId"]):
     def __init__(self, table_number_id: int):
         
         if table_number_id==0:
-            InvalidTableNumberIdException()
+            raise InvalidTableNumberIdException(table_number_id=table_number_id)
         
         self.__table_number_id = table_number_id
 

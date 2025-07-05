@@ -61,7 +61,7 @@ class GetRestaurantByIdController:
                 closing_time=restaurant.closing_time,
                 tables=[
                     CreateTableResponseInfDTO(
-                        id=int(table.id),
+                        number=int(table.id),
                         capacity=table.capacity,
                         location=table.location,
                         restaurant_id=restaurant.id

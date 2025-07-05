@@ -37,33 +37,26 @@ class CreateTableService(IService[CreateTableRequestDTO, CreateTableResponseDTO]
         
         table = Table(
             TableNumberId(table_number_id=value.number),
-            TableLocationVo(location=value.location.value),
+            TableLocationVo(location=value.location),
             TableCapacityVo(capacity=value.capacity)
         )
         
         restaurant.add_table(table=table)
         
-        response_repo=await self.restaurant_command_repository.save(restaurant=restaurant)
+        response_repo=await self.restaurant_command_repository.add_table(restaurant=restaurant,table=table)
         
         if response_repo.is_error:
             return Result.fail(response_repo.error)
         
+        print(f"valor del id {value.number}")
+        print(f"valor del id a traves de table {table.id.table_number_id}")
+        
+        
         response = CreateTableResponseDTO(
-            id=restaurant.id.restaurant_id,
-            lat=restaurant.location.lat,
-            lng=restaurant.location.lng,
-            name=restaurant.name.name,
-            opening_time=restaurant.opening_time.opening_time,
-            closing_time=restaurant.closing_time.closing_time,
-            tables=[
-                CreateTableResponseDTO(
-                    id=tbl.id.table_number_id,
-                    capacity=tbl.capacity.capacity,
-                    location=tbl.location.location.value,
-                    restaurant_id=restaurant.id.restaurant_id
-                )
-                for tbl in restaurant.tables
-            ]
+            id=table.id.table_number_id,
+            restaurant_id=restaurant.id.restaurant_id,
+            capacity=table.capacity.capacity,
+            location=table.location.location,
         )
         
         return Result.success(response)

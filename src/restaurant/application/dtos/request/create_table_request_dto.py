@@ -6,7 +6,7 @@ class CreateTableRequestDTO:
         restaurant_id: str,
         number: int,
         capacity: int,
-        location: TableLocationEnum,
+        location: str,
     ):
         """
         DTO for creating a table in a restaurant.

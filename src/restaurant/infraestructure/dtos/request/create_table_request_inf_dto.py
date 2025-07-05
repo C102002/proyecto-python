@@ -17,10 +17,6 @@ class CreateTableRequestInfDTO(BaseModel):
         default_factory=lambda: TableLocationEnum.terraza,
         description="Ubicación física de la mesa (terraza, interior, parque, jardín interno, jardín externo)"
     )
-    restaurant_id: str = Field(
-        ...,
-        description="Identificador del restaurante al que pertenece esta mesa"
-    )
 
     class Config:
         title = "CreateTableRequestInfDTO"

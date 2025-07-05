@@ -106,16 +106,15 @@ class OrmRestaurantCommandRepository(IRestaurantCommandRepository):
         table: Table
     ) -> Result[Restaurant]:
         try:
-            orm_data = {
-                "restaurant_id": restaurant.id.restaurant_id,
-                "number":        table.id.table_number_id,
-                "capacity":      table.capacity.capacity,
-                "location":      table.location.location.value
-            }
+            orm_data = OrmTableModel(
+                id=table.id.table_number_id,
+                capacity=table.capacity.capacity,
+                location=table.location.location,
+                restaurant_id=restaurant.id.restaurant_id
+            )
 
             # 3) INSERT en BD
-            stmt = insert(OrmTableModel).values(**orm_data)
-            await self.session.execute(stmt)
+            self.session.add(orm_data)
             await self.session.commit()
 
             # 4) Devolver el agregado con éxito
