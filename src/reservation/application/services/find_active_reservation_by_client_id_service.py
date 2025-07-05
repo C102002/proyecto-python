@@ -12,7 +12,6 @@ class FindActiveReservationByClientService(IService[FindActiveReservationRequest
         ):
         super().__init__()
         self.query_repository = query_reser
-        \
     async def execute(self, value: FindActiveReservationRequest) -> Result[FindActiveReservationResponse]:
         
         response = FindActiveReservationResponse()
