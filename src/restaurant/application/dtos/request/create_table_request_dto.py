@@ -1,4 +1,3 @@
-from typing import Optional
 from src.restaurant.domain.entities.enums.table_location_enum import TableLocationEnum
 
 class CreateTableRequestDTO:
@@ -9,12 +8,11 @@ class CreateTableRequestDTO:
         location: TableLocationEnum,
     ):
         """
-        DTO para crear una mesa en un restaurante.
+        DTO for creating a table in a restaurant.
 
-        :param number: Número identificador de la mesa.
-        :param capacity: Capacidad máxima de comensales.
-        :param location: Ubicación física de la mesa.
-        :param restaurant_id: ID del restaurante (opcional si se anida).
+        :param number: Table identifier number.
+        :param capacity: Maximum number of diners the table can seat.
+        :param location: Physical location of the table.
         """
         self.number = number
         self.capacity = capacity
