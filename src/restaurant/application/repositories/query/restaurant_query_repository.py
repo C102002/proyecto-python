@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 from src.common.utils import Result
+from src.restaurant.application.dtos.request.get_all_restaurant_request_dto import GetAllRestaurantRequestDTO
 from src.restaurant.domain.aggregate.restaurant import Restaurant
 
 class IRestaurantQueryRepository(ABC):
@@ -8,6 +9,6 @@ class IRestaurantQueryRepository(ABC):
         pass
 
     @abstractmethod
-    async def get_all_restaurants(self) -> Result[list[Restaurant]]:
+    async def get_all_restaurants(self,dto:GetAllRestaurantRequestDTO) -> Result[list[Restaurant]]:
         pass
     

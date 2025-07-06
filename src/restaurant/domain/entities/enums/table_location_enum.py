@@ -1,7 +1,8 @@
 from enum import Enum
-class TableLocationEnum(Enum):
-    TERRAZA = "terraza"
-    INTERIOR = "interior"
-    PARQUE = "parque"
-    JARDIN_INTERNO = "jardín interno"
-    JARDIN_EXTERNO = "jardín externo"
+
+class TableLocationEnum(str, Enum):
+    terraza         = "terraza"
+    interior        = "interior"
+    parque          = "parque"
+    jard_interno    = "jardín interno"
+    jard_externo    = "jardín externo"

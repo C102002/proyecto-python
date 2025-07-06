@@ -10,8 +10,15 @@ from src.reservation.infraestructure.controllers.create_reservation import Creat
 from src.reservation.infraestructure.controllers.find_active_reservation_by_client import FindActiveReservationController
 from src.reservation.infraestructure.controllers.find_reservation import FindReservationController
 from src.restaurant.infraestructure.controllers.create_restaurant.create_restaurant import CreateRestaurantController
-from src.restaurant.infraestructure.controllers.get_all_restaurants.get_all_restaurant import GetAllRestaurantController
+from src.restaurant.infraestructure.controllers.create_table.create_table import CreateTableController
+from src.restaurant.infraestructure.controllers.delete_restaurant_by_id.delete_restaurant_by_id import DeleteRestaurantByIdController
+from src.restaurant.infraestructure.controllers.delete_table_by_id.delete_table_by_id import DeleteTableByIdController
+from src.restaurant.infraestructure.controllers.get_all_restaurant.get_all_restaurant import GetAllRestaurantController
 import faulthandler
+
+from src.restaurant.infraestructure.controllers.get_restaurant_by_id.get_restaurant_by_id import GetRestaurantByIdController
+from src.restaurant.infraestructure.controllers.update_restaurant.update_restaurant import UpdateRestaurantController
+from src.restaurant.infraestructure.controllers.update_table.update_restaurant import UpdateTableController
 faulthandler.enable()           # colócalo en tu módulo principal, p.ej. src/main.py
 
 
@@ -51,3 +58,11 @@ CreateReservationController(app)
 CancelReservationController(app)
 FindActiveReservationController(app)
 FindReservationController(app)
+GetRestaurantByIdController(app)
+DeleteRestaurantByIdController(app)
+
+# Table Controllers
+DeleteTableByIdController(app)
+CreateTableController(app)
+UpdateRestaurantController(app)
+UpdateTableController(app)

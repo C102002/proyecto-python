@@ -2,6 +2,7 @@ import logging
 from fastapi import HTTPException, status
 
 from src.common.application.error_handler.error_handler import IErrorHandler
+from src.common.domain.domain_exception.domain_exception import DomainException
 from src.common.infrastructure.infrastructure_exception.enum.infraestructure_exception_type import (
     ExceptionInfrastructureType
 )
@@ -12,12 +13,16 @@ from src.common.application.application_exception.application_exception import A
 from src.common.application.application_exception.enum.application_exception_type import ExceptionApplicationType
 from src.common.utils.base_exception import BaseException
 from src.common.utils.base_exception_enum import BaseExceptionEnum
+from src.restaurant.domain.domain_exceptions.invalid_table_number_id import InvalidTableNumberIdException
 
 
 class FastApiErrorHandler(IErrorHandler):
 
-    def _handle_domain_exception(self, message: str) -> Exception:
-        return HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=message)
+    def _handle_domain_exception(self,error:DomainException, message: str) -> Exception:
+        if isinstance(error,InvalidTableNumberIdException):
+            return HTTPException(status_code=status.HTTP_409_CONFLICT, detail=message)
+        else:
+            return HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=message)
 
     def _handle_application_exception(
         self,
@@ -29,6 +34,8 @@ class FastApiErrorHandler(IErrorHandler):
 
         if app_type == ExceptionApplicationType.CONFLICT:
             code = status.HTTP_409_CONFLICT
+        elif app_type == ExceptionApplicationType.FORBIDDEN:
+            code = status.HTTP_403_FORBIDDEN
         else:
             return HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=message)
         
@@ -63,7 +70,7 @@ class FastApiErrorHandler(IErrorHandler):
     def to_http(self, error: BaseException, message: str) -> Exception:
         print(f"error del mapper: {error!r}")
         if error.type == BaseExceptionEnum.DOMAIN_EXCEPTION:
-            return self._handle_domain_exception(message)
+            return self._handle_domain_exception(error,message)
         elif error.type == BaseExceptionEnum.APPLICATION_EXCEPTION:
             if isinstance(error, ApplicationException):
                 return self._handle_application_exception(error, message)
