@@ -6,5 +6,5 @@ class JwtTransformer:
     def __init__(self):
         self.jwt_generator = JwtGenerator()
 
-    def __call__(self, token: str = Depends(OAuth2PasswordBearer(tokenUrl="/login", scopes=ALL_KNOWN_SCOPES))):
+    def __call__(self, token: str = Depends(OAuth2PasswordBearer(tokenUrl="/auth/login", scopes=ALL_KNOWN_SCOPES))):
         return self.jwt_generator.decode_token(token)
