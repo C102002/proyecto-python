@@ -55,4 +55,5 @@ class OrmUserCommandRepository(IUserCommandRepository):
         except Exception as e:
             await self.session.rollback()
             err = InfrastructureException(str(e))
+            
             return Result.fail(err)

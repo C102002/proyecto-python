@@ -27,6 +27,7 @@ async def lifespan(app: FastAPI):
     initial_db_instance = PostgresDatabase() 
     await initial_db_instance.create_db_and_tables()
     print("Base de datos y tablas creadas.")
+    
     yield
     if PostgresDatabase._engine:
         await PostgresDatabase._engine.dispose()
