@@ -5,6 +5,10 @@ from contextlib import asynccontextmanager
 from src.auth.infrastructure.controllers.register.user_register import UserRegisterController
 from src.auth.infrastructure.controllers.login.user_login import UserLoginController
 from src.auth.infrastructure.controllers.update.user_update import UserUpdateController
+from src.reservation.infraestructure.controllers.cancel_reservation import CancelReservationController
+from src.reservation.infraestructure.controllers.create_reservation import CreateReservationController
+from src.reservation.infraestructure.controllers.find_active_reservation_by_client import FindActiveReservationController
+from src.reservation.infraestructure.controllers.find_reservation import FindReservationController
 from src.restaurant.infraestructure.controllers.create_restaurant.create_restaurant import CreateRestaurantController
 from src.restaurant.infraestructure.controllers.create_table.create_table import CreateTableController
 from src.restaurant.infraestructure.controllers.delete_restaurant_by_id.delete_restaurant_by_id import DeleteRestaurantByIdController
@@ -49,6 +53,14 @@ UserLoginController(app)
 # Restaurants Controllers
 CreateRestaurantController(app)
 GetAllRestaurantController(app)
+
+# Reservation Controllers
+CreateReservationController(app)
+CancelReservationController(app)
+FindActiveReservationController(app)
+FindReservationController(app)
+
+# Restaurnat
 GetRestaurantByIdController(app)
 DeleteRestaurantByIdController(app)
 
