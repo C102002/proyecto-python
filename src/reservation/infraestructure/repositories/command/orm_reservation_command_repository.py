@@ -45,7 +45,6 @@ class OrmReservationCommandRepository(IReservationCommandRepository):
             return Result.success(entry)
 
         except Exception as e:
-            print(e,flush=True)
             await self.session.rollback()
             err = InfrastructureException(str(e))
             return Result.fail(err)
