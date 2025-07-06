@@ -14,7 +14,7 @@ class FindReservationService(IService[FindReservationRequest, FindReservationRes
         self.query_repository = query_reser
         
     async def execute(self, value: FindReservationRequest) -> Result[FindReservationResponse]:
-        
-        response = FindReservationResponse()
+        find = await self.query_repository.get_all()
+        response = FindReservationResponse(reservations=find)
         return Result.success(response)
 

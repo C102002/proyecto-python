@@ -3,6 +3,7 @@ from src.common.infrastructure.middlewares.get_postgresql_session import GetPost
 from src.common.application.aspects.exception_decorator.exception_decorator import ExceptionDecorator
 from sqlalchemy.ext.asyncio import AsyncSession
 from src.common.infrastructure.error_handler.fast_api_error_handler import FastApiErrorHandler
+from src.reservation.application.dtos.request.find_reservation_request_dto import FindReservationRequest
 from src.reservation.application.services.find_reservation_service import FindReservationService
 from src.reservation.infraestructure.repositories.query.orm_reservation_query_repository import OrmReservationQueryRepository
 
@@ -38,6 +39,6 @@ class FindReservationController:
             ):
             if service is None:
                 raise RuntimeError("FindReservationService not initialized. Did you forget to call init()?")
-            service = ExceptionDecorator(service, FastApiErrorHandler())
-            await service.execute()
-            return None
+            result = service = ExceptionDecorator(service, FastApiErrorHandler())
+            result = await service.execute(FindReservationRequest())
+            return result.value

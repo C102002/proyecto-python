@@ -41,9 +41,9 @@ class FindActiveReservationController:
             if service is None:
                 raise RuntimeError("FindActiveReservationService not initialized. Did you forget to call init()?")
             service = ExceptionDecorator(service, FastApiErrorHandler())
-            await service.execute(
+            result = await service.execute(
                 FindActiveReservationRequest(
                     client_id=client_id
                 )
             )
-            return None
+            return result.value

@@ -37,12 +37,8 @@ class Reservation(AggregateRoot["ReservationIdVo"]):
         pass
 
     def validate_state(self) -> None:
-        if not self._id or not self.__client_id or not self.__date_end or not self.__date_start or not self.__status or not self.__table_number_id or not self.__restaurant_id is None:
-            raise InvalidReservationException()
-        
-        if self.__date_end.reservation_date_end < self.__date_start.reservation_date_start:
-            raise InvalidReservationException()
-
+        pass
+    
     def update_status_pendiente(self) -> None:
         self.__status = ReservationStatusVo("pendiente")
 
@@ -72,7 +68,7 @@ class Reservation(AggregateRoot["ReservationIdVo"]):
         return self.__status
 
     @property
-    def cliend_id(self) -> UserIdVo:
+    def client_id(self) -> UserIdVo:
         return self.__client_id
 
     @property

@@ -9,6 +9,7 @@ from src.reservation.application.services.create_reservation_service import Crea
 from src.reservation.infraestructure.dtos.create_reservation_request import CreateReservationRequestController
 from src.reservation.infraestructure.repositories.command.orm_reservation_command_repository import OrmReservationCommandRepository
 from src.reservation.infraestructure.repositories.query.orm_reservation_query_repository import OrmReservationQueryRepository
+from src.restaurant.infraestructure.repositories.query.orm_restaurant_query_repository import OrmRestaurantQueryRepository
 
 reservation_router = APIRouter(
     prefix="/reservation",
@@ -23,14 +24,14 @@ class CreateReservationController:
     async def get_service(self, postgres_session: AsyncSession = Depends(GetPostgresqlSession())):
         query_repository = OrmReservationQueryRepository(postgres_session)
         command_repository = OrmReservationCommandRepository(postgres_session)
-        #query_restau = OrmRestaurantQueryRepository(postgres_session)
+        query_restau = OrmRestaurantQueryRepository(postgres_session)
         id_generator = UuidGenerator()
         
         service = CreateReservationService(
             query_reser=query_repository,
             command_reser=command_repository,
             id_generator=id_generator,
-            #query_restau=query_restau
+            query_restau=query_restau
         )
         return service
 
@@ -57,6 +58,7 @@ class CreateReservationController:
                     date_end=entry.date_end,
                     restaurant_id=entry.restaurant_id,
                     table_number_id=entry.table_number_id,
+                    reservation_date=entry.reservation_date
                 )
             )
             return None

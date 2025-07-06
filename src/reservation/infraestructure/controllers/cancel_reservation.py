@@ -46,7 +46,7 @@ class CancelReservationController:
             service = ExceptionDecorator(service, FastApiErrorHandler())
             await service.execute(
                 CancelReservationRequest(
-                    reservation_id = entry.reservation_router,
+                    reservation_id = entry.reservation_id,
                     client_id = entry.client_id
                 )
             )

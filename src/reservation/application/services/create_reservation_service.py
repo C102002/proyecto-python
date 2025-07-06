@@ -1,3 +1,4 @@
+from datetime import date, datetime, timedelta
 from src.auth.domain.value_objects.user_id_vo import UserIdVo
 from src.common.application import IService
 from src.common.application.id_generator.id_generator import IIdGenerator
@@ -12,6 +13,7 @@ from src.reservation.domain.value_objects.reservation_date_start_vo import Reser
 from src.reservation.domain.value_objects.reservation_date_vo import ReservationDateVo
 from src.reservation.domain.value_objects.reservation_id_vo import ReservationIdVo
 from src.reservation.domain.value_objects.reservation_status_vo import ReservationStatusVo
+from src.restaurant.application.repositories.query.restaurant_query_repository import IRestaurantQueryRepository
 from src.restaurant.domain.entities.value_objects.table_number_id_vo import TableNumberId
 from src.restaurant.domain.value_objects.restaurant_id_vo import RestaurantIdVo
 
@@ -21,20 +23,24 @@ class CreateReservationService(IService[CreateReservationRequest, CreateReservat
         self,    
         query_reser: IReservationQueryRepository, 
         command_reser: IReservationCommandRepository,
-        #query_restau: IRestaurantQueryRepository,
+        query_restau: IRestaurantQueryRepository,
         id_generator: IIdGenerator
         ):
         super().__init__()
         self.query_repository = query_reser
         self.command_repository = command_reser
         self.id_generator = id_generator
-        #self.query_restau = query_restau
+        self.query_restau = query_restau
         
     async def execute(self, value: CreateReservationRequest) -> Result[CreateReservationResponse]:
         
-        # MAximo cuatro horas por reserva
-        if ( value.date_end - value.date_start > 4 ):
-            raise Exception("Maximo cuatro horas por reserva")
+        date_base = date.today()
+        start_dt = datetime.combine(date_base, value.date_start)
+        end_dt = datetime.combine(date_base, value.date_end)
+
+        # Validamos si la diferencia es mayor a 4 horas
+        if end_dt - start_dt > timedelta(hours=4):
+            raise Exception("Máximo cuatro horas por reserva")
         
         # MESA DISPONIBLE. No pueden haber mas de dos reservas activas para la misma mesa en el mismo horario
         findTable = await self.query_repository.exists_by_table(
@@ -44,6 +50,10 @@ class CreateReservationService(IService[CreateReservationRequest, CreateReservat
             reservation_date=value.reservation_date,
             restaurant_id = value.restaurant_id
         )
+        
+        if (findTable.is_success != True):
+            raise findTable.error
+        
         if (findTable.value == True):
             raise Exception("Mesa no disponible")
         
@@ -58,13 +68,29 @@ class CreateReservationService(IService[CreateReservationRequest, CreateReservat
             raise Exception("Cliente ya posee una reserva activa en el mismo horario")
         
         # Horario de reserva debe estar dentro del horario de apertura, cierre del restarurante
+        restau = await self.query_restau.get_by_id(
+            value.restaurant_id
+        )
+        
+        if (restau.is_success == False):
+            raise Exception("Restaurante no encontrado")
+        
+        close_time = restau.value.closing_time
+        open_time = restau.value.opening_time
+
+        start_rt = datetime.combine(date_base, close_time.closing_time)
+        end_rt = datetime.combine(date_base, open_time.opening_time)
+        
+        # Validamos si la diferencia es mayor a 4 horas
+        #if start_rt < start_dt or end_rt < end_dt:
+        #    raise Exception("Horario de reserva fuera del horario de trabajo del restaurante")
         
         # Los platos deben pertenecer al menu del restaurante de la mesa reservada
         
         # Proceso
-        id = await self.id_generator.generate_id()
+        id = self.id_generator.generate_id()
         
-        self.command_repository.save(
+        await self.command_repository.save(
             Reservation(
                 client_id=UserIdVo(value.client_id),
                 id=ReservationIdVo(id),

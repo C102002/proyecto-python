@@ -6,6 +6,10 @@ from src.reservation.domain.aggregate.reservation import Reservation
 class IReservationQueryRepository(ABC):
 
     @abstractmethod
+    async def get_by_id(self, id: str) -> Result[Reservation]:
+        pass
+
+    @abstractmethod
     async def exists_by_date_client(self, date_start: time, date_end: time, reservation_date: date, client_id: str) -> Result[bool]:
         pass
 

@@ -13,7 +13,7 @@ class FindActiveReservationByClientService(IService[FindActiveReservationRequest
         super().__init__()
         self.query_repository = query_reser
     async def execute(self, value: FindActiveReservationRequest) -> Result[FindActiveReservationResponse]:
-        
-        response = FindActiveReservationResponse()
+        find = await self.query_repository.get_active_by_client_id(client_id=value.client_id)
+        response = FindActiveReservationResponse(reservations=find)
         return Result.success(response)
 

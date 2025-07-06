@@ -58,6 +58,8 @@ CreateReservationController(app)
 CancelReservationController(app)
 FindActiveReservationController(app)
 FindReservationController(app)
+
+# Restaurnat
 GetRestaurantByIdController(app)
 DeleteRestaurantByIdController(app)
 

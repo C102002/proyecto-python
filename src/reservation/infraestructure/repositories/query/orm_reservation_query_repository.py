@@ -26,8 +26,30 @@ class OrmReservationQueryRepository(IReservationQueryRepository):
             )
             oorm = result.scalars().first()
             if oorm is None:
-               Result.success(False)
+               return Result.success(False)
             return Result.success(True)
+        except Exception as e:
+            return Result.fail(InfrastructureException(str(e)))
+
+    async def get_by_id(self, id: str) -> Result[Reservation]:
+        try:
+            result = await self.session.execute(
+                select(OrmReservationModel).where(literal_column("id") == id)
+            )
+            orm = result.scalars().first()
+            if orm is None:
+               return Result.fail(Exception("No encontrado"))
+            v = Reservation(
+                    client_id=(orm.id),
+                    id=(orm.id),
+                    date_end=(orm.date_end),
+                    date_start=(orm.date_start),
+                    reservation_date=(orm.reservation_date),
+                    status=(orm.status),
+                    table_number_id=(orm.table_number_id),
+                    restaurant_id=orm.restaurant_id
+                )
+            return Result.success(v)
         except Exception as e:
             return Result.fail(InfrastructureException(str(e)))
 
@@ -45,8 +67,9 @@ class OrmReservationQueryRepository(IReservationQueryRepository):
                 )
             )
             oorm = result.scalars().first()
+            print(oorm, flush=True)
             if oorm is None:
-               Result.success(False)
+               return Result.success(False)
             return Result.success(True)
         except Exception as e:
             return Result.fail(InfrastructureException(str(e)))
@@ -54,7 +77,12 @@ class OrmReservationQueryRepository(IReservationQueryRepository):
     async def get_active_by_client_id(self, client_id: str) -> Result[list[Reservation]]:
         try:
             result = await self.session.execute(
-                select(OrmReservationModel).where(literal_column("client_id") == client_id)
+                select(OrmReservationModel).where(
+                    and_(
+                        literal_column("client_id") == client_id,
+                        literal_column("status") == "pendiente"
+                    )
+                )
             )
             orms = result.scalars().all()
             resers: list[Reservation] = []
@@ -121,4 +149,5 @@ class OrmReservationQueryRepository(IReservationQueryRepository):
                 resers.append(v)
             return Result.success(resers)
         except Exception as e:
+            print(e,flush=True)
             return Result.fail(InfrastructureException(str(e)))
