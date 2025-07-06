@@ -10,3 +10,6 @@ class EntityRoot(Generic[T]):
     @property
     def id(self) -> T:
         return self._id
+    
+    def equals(self, other:"EntityRoot[T]"):
+        return self.id==other.id
