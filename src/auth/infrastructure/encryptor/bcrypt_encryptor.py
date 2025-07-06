@@ -1,12 +1,10 @@
-from passlib.context import CryptContext
 from src.auth.application.encryptor.encryptor import IEncryptor
+import bcrypt
 
 class BcryptEncryptor(IEncryptor):
-    def __init__(self):
-        self.context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
     def encrypt(self, plain_data: str) -> str:
-        return self.context.hash(plain_data)
+        return bcrypt.hashpw(plain_data.encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
 
     def verify_password(self, plain_data: str, hashed_data: str) -> bool:
-        return self.context.verify(plain_data, hashed_data)
+        return bcrypt.checkpw(plain_data.encode("utf-8"), hashed_data.encode("utf-8"))

@@ -1,0 +1,21 @@
+services:
+
+  postgres:
+    image: postgres:16
+    container_name: pg_fastapi_app_test
+    environment:
+      - POSTGRES_DB=${DB_NAME_TEST}
+      - POSTGRES_USER=${DB_USERNAME}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+    ports:
+      - '${DB_PORT_TEST}:5432'
+    volumes:
+      - pg_fastapi_app_vol_test:/var/lib/postgresql/data
+    networks:
+      - fastapi_app_net_test
+
+volumes:
+  pg_fastapi_app_vol_test:
+
+networks:
+  fastapi_app_net_test:
