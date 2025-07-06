@@ -103,7 +103,7 @@ This project includes a `Dockerfile` and `docker-compose.yml` for easy container
 1.  **Build and run the Docker container using Docker Compose:**
 
     ```bash
-    docker-compose up --build
+    docker-compose up -d
     ```
 
     This command will build the Docker image (if it doesn't exist or if changes were made to the Dockerfile) and start the service defined in `docker-compose.yml`.
