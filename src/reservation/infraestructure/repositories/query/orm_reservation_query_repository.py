@@ -31,7 +31,7 @@ class OrmReservationQueryRepository(IReservationQueryRepository):
         except Exception as e:
             return Result.fail(InfrastructureException(str(e)))
 
-    async def exists_by_table(self, table_id: str, date_start: time, date_end: time, reservation_date: date, ) -> Result[bool]:
+    async def exists_by_table(self, table_id: str, date_start: time, date_end: time, reservation_date: date, restaurant_id: str) -> Result[bool]:
         try:
             result = await self.session.execute(
                 select(OrmReservationModel).where(
@@ -40,6 +40,7 @@ class OrmReservationQueryRepository(IReservationQueryRepository):
                         literal_column("date_start") == date_start,
                         literal_column("date_end") == date_end,
                         literal_column("reservation_date") == reservation_date,
+                        literal_column("restaurant_id") == restaurant_id,
                     )
                 )
             )

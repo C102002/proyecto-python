@@ -1,6 +1,5 @@
 from abc import ABC, abstractmethod
-from datetime import date
-import time
+from datetime import date, time
 from src.common.utils import Result
 from src.reservation.domain.aggregate.reservation import Reservation
 
@@ -11,7 +10,7 @@ class IReservationQueryRepository(ABC):
         pass
 
     @abstractmethod
-    async def exists_by_table(self, table_id: str, date_start: time, date_end: time, reservation_date: date,) -> Result[bool]:
+    async def exists_by_table(self, table_id: str, date_start: time, date_end: time, reservation_date: date, restaurant_id: str) -> Result[bool]:
         pass
 
     @abstractmethod
