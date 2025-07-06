@@ -61,6 +61,8 @@ class FastApiErrorHandler(IErrorHandler):
             code = status.HTTP_401_UNAUTHORIZED
         elif infra_type == ExceptionInfrastructureType.INTERNAL_SERVER_ERROR:
             code = status.HTTP_500_INTERNAL_SERVER_ERROR
+        elif infra_type == ExceptionInfrastructureType.USER_NOT_FOUND:
+            code = status.HTTP_404_NOT_FOUND
         else:
             code = status.HTTP_500_INTERNAL_SERVER_ERROR
             message = "Unexpected infrastructure error"

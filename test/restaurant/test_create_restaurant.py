@@ -18,39 +18,39 @@ load_dotenv()
 client = TestClient(app)
 
 # TODO terminar de acomodarlo porque da error de un hilo de sesion de la bd
-# @pytest.mark.asyncio
-# async def test_create_restaurant_success():
-#     """
-#     GIVEN a valid payload for creating a restaurant
-#     WHEN POST /restaurant is called
-#     THEN it returns 201 and a body containing the new restaurant data
-#     """
+@pytest.mark.asyncio
+async def test_create_restaurant_success():
+    """
+    GIVEN a valid payload for creating a restaurant
+    WHEN POST /restaurant is called
+    THEN it returns 201 and a body containing the new restaurant data
+    """
     
-#     payload={
-#     "closing_time": "22:00:00",
-#     "lat": -0.180653,
-#     "lng": -78.467834,
-#     "name": "Mi Restaurante",
-#     "opening_time": "09:00:00"
-#     }
+    payload={
+    "closing_time": "22:00:00",
+    "lat": -0.180653,
+    "lng": -78.467834,
+    "name": "Mi Restaurante",
+    "opening_time": "09:00:00"
+    }
     
-#     response = client.post("/restaurant", json=payload)
+    response = client.post("/restaurant", json=payload)
     
-#     print("STATUS:", response.status_code)
-#     print("BODY  :", response.text)
+    print("STATUS:", response.status_code)
+    print("BODY  :", response.text)
 
     
-#     assert response.status_code == 201
+    assert response.status_code == 201
 
-#     data = response.json()
-#     # Verify that the response contains all expected fields
-#     assert "id" in data
-#     assert uuid.UUID(data["id"])  # valid UUID
-#     assert data["name"] == payload["name"]
-#     assert data["lat"] == pytest.approx(payload["lat"], rel=1e-6)
-#     assert data["lng"] == pytest.approx(payload["lng"], rel=1e-6)
-#     assert data["opening_time"] == payload["opening_time"]
-#     assert data["closing_time"] == payload["closing_time"]
+    data = response.json()
+    # Verify that the response contains all expected fields
+    assert "id" in data
+    assert uuid.UUID(data["id"])  # valid UUID
+    assert data["name"] == payload["name"]
+    assert data["lat"] == pytest.approx(payload["lat"], rel=1e-6)
+    assert data["lng"] == pytest.approx(payload["lng"], rel=1e-6)
+    assert data["opening_time"] == payload["opening_time"]
+    assert data["closing_time"] == payload["closing_time"]
 
 
 @pytest.mark.asyncio
