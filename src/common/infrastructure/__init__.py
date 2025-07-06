@@ -6,4 +6,5 @@ from .timer.timer_timestamp import TimerTimestamp
 from .middlewares.get_postgresql_session import GetPostgresqlSession
 from .jwt.jwt_generator import JwtGenerator
 from .infrastructure_exception.infrastructure_exception import InfrastructureException
+from .infrastructure_exception.enum.infraestructure_exception_type import ExceptionInfrastructureType
 from .roles.role_scopes import ROLE_SCOPES, ALL_KNOWN_SCOPES
