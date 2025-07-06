@@ -26,6 +26,7 @@ class UserLoginService(IService[UserLoginRequestDto, UserLoginResponseDto]):
             return Result.fail(InvalidCredentialsException())
 
         token = self.token_generator.generate_token({"sub": user.value.email.email}, user.value.role.role)
+        
         response = UserLoginResponseDto(
             token=token
         )

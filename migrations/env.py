@@ -12,7 +12,6 @@ from dotenv import load_dotenv
 from src.auth.infrastructure.models.orm_user_model import OrmUserModel
 from src.restaurant.infraestructure.models.orm_restaurant_model import OrmRestaurantModel
 from src.restaurant.infraestructure.models.orm_table_model import OrmTableModel
-
 from sqlmodel import SQLModel
 import asyncio
 
