@@ -5,13 +5,11 @@ from dotenv import load_dotenv
 import asyncio
 import platform
 
-if platform.system() == "Windows":
-    asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
-
 load_dotenv()
 
 client = TestClient(app)
 
+@pytest.mark.order(1)
 @pytest.mark.asyncio
 async def test_user_register_success():
     user_data = {
@@ -29,6 +27,7 @@ async def test_user_register_success():
     response_data = response.json()
     assert response_data is None
 
+@pytest.mark.order(2)
 @pytest.mark.asyncio
 async def test_user_register_failure_by_role():
     user_data = {
@@ -41,6 +40,7 @@ async def test_user_register_failure_by_role():
     response = client.post("/auth/register", json=user_data)
     assert response.status_code == 422
 
+@pytest.mark.order(3)
 @pytest.mark.asyncio
 async def test_user_register_failure_by_email_existing():
     user_data = {

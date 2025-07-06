@@ -5,13 +5,11 @@ from dotenv import load_dotenv
 import asyncio
 import platform
 
-if platform.system() == "Windows":
-    asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
-
 load_dotenv()
 
 client = TestClient(app)
 
+@pytest.mark.order(1)
 @pytest.mark.asyncio
 async def test_user_login_success():
     user_data = {
@@ -41,6 +39,7 @@ async def test_user_login_success():
     assert "token_type" in response_data
     assert response_data["token_type"] == "bearer"
 
+@pytest.mark.order(2)
 @pytest.mark.asyncio
 async def test_user_login_failure_by_password():
     user_data = {
