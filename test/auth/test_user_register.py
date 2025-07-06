@@ -21,6 +21,9 @@ async def test_user_register_success():
     }
     # Test successful registration
     response = client.post("/auth/register", json=user_data)
+    
+    print("STATUS:", response.status_code)
+    print("BODY  :", response.text)
 
     assert response.status_code == 201
     response_data = response.json()
@@ -45,7 +48,11 @@ async def test_user_register_failure_by_email_existing():
         "name": "Daniel",
         "password": "strongpassword123"
     }
+
     # Test successful registration
     response = client.post("/auth/register", json=user_data)
+    
+    print("STATUS:", response.status_code)
+    print("BODY  :", response.text)
 
     assert response.status_code == 409

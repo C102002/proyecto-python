@@ -112,6 +112,14 @@ This project includes a `Dockerfile` and `docker-compose.yml` for easy container
     ```
 
 ### Running the test with pytest
+
+#### 1. 🐳 Run the docker compose
+
+
+```bash
+docker-compose -f docker-compose-tests.yml up -d
+```
+
 #### 1. 🧪 Run Tests with pytest
 
 ```bash

@@ -1,20 +1,30 @@
-# app/schemas/restaurant.py
 from typing import List
 from pydantic import BaseModel, Field
 from datetime import time
 
-from src.restaurant.infraestructure.dtos.request.create_table_request_inf_dto import CreateTableRequestInfDTO
+from src.restaurant.infraestructure.dtos.request.create_table_request_inf_dto import (
+    CreateTableRequestInfDTO
+)
 
 class CreateRestaurantRequestInfDTO(BaseModel):
-    lat: float = Field(0.0, description="Latitud del restaurante, en grados decimales")
-    lng: float = Field(0.0, description="Longitud del restaurante, en grados decimales")
-    name: str = Field("Mi Restaurante", description="Nombre del restaurante")
+    lat: float = Field(
+        ..., 
+        description="Latitud del restaurante, en grados decimales"
+    )
+    lng: float = Field(
+        ..., 
+        description="Longitud del restaurante, en grados decimales"
+    )
+    name: str = Field(
+        ..., 
+        description="Nombre del restaurante"
+    )
     opening_time: time = Field(
-        default_factory=lambda: time.fromisoformat("09:00:00"),
+        ...,
         description="Hora de apertura (HH:MM:SS)"
     )
     closing_time: time = Field(
-        default_factory=lambda: time.fromisoformat("22:00:00"),
+        ...,
         description="Hora de cierre (HH:MM:SS)"
     )
     tables: List[CreateTableRequestInfDTO] = Field(
@@ -24,3 +34,16 @@ class CreateRestaurantRequestInfDTO(BaseModel):
 
     class Config:
         title = "CreateRestaurantRequestDTO"
+        json_schema_extra = {
+            "example": {
+                "lat": -0.180653,
+                "lng": -78.467834,
+                "name": "Mi Restaurante",
+                "opening_time": "09:00:00",
+                "closing_time": "22:00:00",
+                "tables": [
+                    {"number": 1, "capacity": 4, "location": "terraza"},
+                    {"number": 2, "capacity": 2, "location": "interior"}
+                ]
+            }
+        }

@@ -31,6 +31,9 @@ async def test_user_login_success():
         "password": "strongpassword123"
     }
     response = client.post("/auth/login", data=user_data_login)
+    
+    print("STATUS:", response.status_code)
+    print("BODY  :", response.text)
 
     assert response.status_code == 200
     response_data = response.json()
