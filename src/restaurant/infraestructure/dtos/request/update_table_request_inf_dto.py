@@ -20,7 +20,7 @@ class UpdateTableRequestInfDTO(BaseModel):
     class Config:
         title = "UpdateTableRequestInfDTO"
         use_enum_values = True
-        schema_extra = {
+        json_schema_extra = {
             "example": {
                 "new_number": 5,
                 "capacity": 6,
