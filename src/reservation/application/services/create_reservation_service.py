@@ -3,6 +3,8 @@ from src.auth.domain.value_objects.user_id_vo import UserIdVo
 from src.common.application import IService
 from src.common.application.id_generator.id_generator import IIdGenerator
 from src.common.utils import Result
+from src.menu.domain.value_objects.dish_id_vo import DishIdVo
+from src.menu.infrastructure.repositories.menu_repository import MenuRepository
 from src.reservation.application.dtos.request.create_reservation_request_dto import CreateReservationRequest
 from src.reservation.application.dtos.response.create_reservation_response_dto import CreateReservationResponse
 from src.reservation.application.repositories.command.reservation_command_repository import IReservationCommandRepository
@@ -24,13 +26,15 @@ class CreateReservationService(IService[CreateReservationRequest, CreateReservat
         query_reser: IReservationQueryRepository, 
         command_reser: IReservationCommandRepository,
         query_restau: IRestaurantQueryRepository,
-        id_generator: IIdGenerator
+        id_generator: IIdGenerator,
+        #menu_repo: MenuRepository
         ):
         super().__init__()
         self.query_repository = query_reser
         self.command_repository = command_reser
         self.id_generator = id_generator
         self.query_restau = query_restau
+        #self.menu_repo = menu_repo
         
     async def execute(self, value: CreateReservationRequest) -> Result[CreateReservationResponse]:
         
@@ -85,10 +89,21 @@ class CreateReservationService(IService[CreateReservationRequest, CreateReservat
         #if start_rt < start_dt or end_rt < end_dt:
         #    raise Exception("Horario de reserva fuera del horario de trabajo del restaurante")
         
+        # No pueden haber mas de cinco platos reservados
+        if ( len(value.dish_id) ):
+            raise Exception("No pueden preordenarse mas de 5 platos")
+        
         # Los platos deben pertenecer al menu del restaurante de la mesa reservada
+        #menu = await self.menu_repo.find_by_restaurant_id(restaurant_id=RestaurantIdVo(value.restaurant_id))
+        #if (menu==None):
+        #    raise Exception("Restaurant no posee menu registrado")
         
         # Proceso
         id = self.id_generator.generate_id()
+        
+        listId = []
+        for i in value.dish_id:
+            listId.insert( DishIdVo(i) )
         
         await self.command_repository.save(
             Reservation(
@@ -99,7 +114,8 @@ class CreateReservationService(IService[CreateReservationRequest, CreateReservat
                 reservation_date=ReservationDateVo(value.reservation_date),
                 status=ReservationStatusVo("pendiente"),
                 table_number_id=TableNumberId(value.table_number_id),
-                restaurant_id=RestaurantIdVo(value.restaurant_id)
+                restaurant_id=RestaurantIdVo(value.restaurant_id),
+                dish=listId
             )
         )
         

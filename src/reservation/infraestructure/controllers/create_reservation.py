@@ -1,5 +1,6 @@
 from fastapi import FastAPI, Depends, status, APIRouter
 from src.common.infrastructure.middlewares.get_postgresql_session import GetPostgresqlSession
+from src.menu.infrastructure.repositories.menu_repository import MenuRepository
 from src.reservation.application.dtos.request.create_reservation_request_dto import CreateReservationRequest
 from src.common.application.aspects.exception_decorator.exception_decorator import ExceptionDecorator
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -26,12 +27,14 @@ class CreateReservationController:
         command_repository = OrmReservationCommandRepository(postgres_session)
         query_restau = OrmRestaurantQueryRepository(postgres_session)
         id_generator = UuidGenerator()
+        #menu_repo = MenuRepository(postgres_session)
         
         service = CreateReservationService(
             query_reser=query_repository,
             command_reser=command_repository,
             id_generator=id_generator,
-            query_restau=query_restau
+            query_restau=query_restau,
+            #menu_repo=menu_repo
         )
         return service
 
@@ -58,7 +61,8 @@ class CreateReservationController:
                     date_end=entry.date_end,
                     restaurant_id=entry.restaurant_id,
                     table_number_id=entry.table_number_id,
-                    reservation_date=entry.reservation_date
+                    reservation_date=entry.reservation_date,
+                    dish_id=entry.dish_id
                 )
             )
             return None

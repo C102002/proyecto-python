@@ -64,12 +64,11 @@ FindReservationController(app)
 GetRestaurantByIdController(app)
 DeleteRestaurantByIdController(app)
 
-# Menu Controllers
-MenuController(app)
-
-
 # Table Controllers
 DeleteTableByIdController(app)
 CreateTableController(app)
 UpdateRestaurantController(app)
 UpdateTableController(app)
+
+# Menu Controllers
+MenuController(app)

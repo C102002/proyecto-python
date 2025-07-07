@@ -1,6 +1,9 @@
 from src.auth.domain.value_objects.user_id_vo import UserIdVo
 from src.common.domain.domain_event.domain_event_root import DomainEventRoot
 from src.common.domain import AggregateRoot
+from src.menu.domain.entities.dish import Dish
+from src.menu.domain.value_objects.dish_id_vo import DishIdVo
+from src.menu.domain.value_objects.menu_id_vo import MenuIdVo
 from src.reservation.domain.domain_exceptions.invalid_reservation_exception import InvalidReservationException
 from src.reservation.domain.value_objects.reservation_date_end_vo import ReservationDateEndVo
 from src.reservation.domain.value_objects.reservation_date_start_vo import ReservationDateStartVo
@@ -21,7 +24,8 @@ class Reservation(AggregateRoot["ReservationIdVo"]):
         status: ReservationStatusVo,
         client_id: UserIdVo,
         table_number_id: TableNumberId,
-        restaurant_id: RestaurantIdVo
+        restaurant_id: RestaurantIdVo,
+        dish: list[DishIdVo]
     ):
         super().__init__(id)
         self.__client_id = client_id
@@ -31,6 +35,7 @@ class Reservation(AggregateRoot["ReservationIdVo"]):
         self.__table_number_id = table_number_id
         self.__restaurant_id = restaurant_id
         self.__date = reservation_date
+        self.__dish = dish
         self.validate_state()
 
     def when(self, event: DomainEventRoot) -> None:
@@ -78,3 +83,10 @@ class Reservation(AggregateRoot["ReservationIdVo"]):
     @property
     def table_number_id(self) -> TableNumberId:
         return self.__table_number_id
+
+    @property
+    def dish(self) -> list[Dish]:
+        return self.__dish
+
+    def update_dish(self, dish: list[DishIdVo]):
+        self.__dish = dish
