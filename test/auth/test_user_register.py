@@ -1,4 +1,5 @@
 import pytest
+# Este path me da error
 from test.auth.dto.user_register_request_mock_dto import UserRegisterRequestMockDto
 from src.auth.application.dtos.request.user_register_request_dto import UserRegisterRequestDto
 from fastapi import HTTPException
@@ -35,6 +36,7 @@ async def test_user_register_failure_by_role(user_register_service, user_reposit
 
     
 
+@pytest.mark.order(3)
 @pytest.mark.asyncio
 async def test_user_register_failure_by_email_existing(user_register_service):
     

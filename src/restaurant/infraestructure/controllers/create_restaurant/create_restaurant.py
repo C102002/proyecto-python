@@ -1,7 +1,8 @@
 # app/controllers/create_restaurant_controller.py
-from fastapi import Depends, FastAPI
+from fastapi import Depends, FastAPI, Security
 from fastapi import status
 
+from src.auth.infrastructure.middlewares.user_role_verify import UserRoleVerify
 from src.common.application.aspects.exception_decorator.exception_decorator import ExceptionDecorator
 from src.common.infrastructure.database.postgres.postgres_database import PostgresDatabase
 from src.common.infrastructure.error_handler.fast_api_error_handler import FastApiErrorHandler
@@ -52,7 +53,7 @@ class CreateRestaurantController:
             ),
             response_description="Datos del restaurante recién creado"
         )
-        async def create_restaurant(input_dto: CreateRestaurantRequestInfDTO,create_restaurant_service: CreateRestaurantService = Depends(self.get_service)):
+        async def create_restaurant(input_dto: CreateRestaurantRequestInfDTO,create_restaurant_service: CreateRestaurantService = Depends(self.get_service),token = Security(UserRoleVerify(), scopes=["admin:manage"])):
         
             service=ExceptionDecorator(service=create_restaurant_service,error_handler=FastApiErrorHandler())
             

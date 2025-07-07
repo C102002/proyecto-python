@@ -14,7 +14,7 @@ class UserRoleVerify:
         user = await user_query_repository.get_user_email(decode_token["sub"])
         if user.is_error:
             raise HTTPException(status_code=404, detail="User not found")
-        
+                
         if not set(scopes.scopes).intersection(set(decode_token["scopes"])):
             raise HTTPException(status_code=403, detail="Forbidden: Client attempts to access admin endpoint.")
 
