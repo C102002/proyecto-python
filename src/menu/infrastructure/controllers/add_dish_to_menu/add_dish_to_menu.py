@@ -3,7 +3,6 @@ from src.menu.application.dtos.request.create_dish_request_dto import CreateDish
 from ...dtos.request.create_dish_request_inf_dto import CreateDishRequesInftDto
 from src.menu.application.dtos.response.dish_response_dto import DishResponseDto
 from src.menu.application.services.add_dish_to_menu_service import AddDishToMenuService
-from src.menu.infrastructure.dependencies import get_menu_service
 from src.common.application import ExceptionDecorator
 from src.common.infrastructure.error_handler.fast_api_error_handler import FastApiErrorHandler
 from ...routers.menu_router import menu_router
