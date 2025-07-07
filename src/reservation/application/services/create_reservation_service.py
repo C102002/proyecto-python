@@ -18,6 +18,7 @@ from src.reservation.domain.value_objects.reservation_status_vo import Reservati
 from src.restaurant.application.repositories.query.restaurant_query_repository import IRestaurantQueryRepository
 from src.restaurant.domain.entities.value_objects.table_number_id_vo import TableNumberId
 from src.restaurant.domain.value_objects.restaurant_id_vo import RestaurantIdVo
+from src.common.application import ApplicationException, ExceptionApplicationType
 
 class CreateReservationService(IService[CreateReservationRequest, CreateReservationResponse]):
 
@@ -44,7 +45,7 @@ class CreateReservationService(IService[CreateReservationRequest, CreateReservat
 
         # Validamos si la diferencia es mayor a 4 horas
         if end_dt - start_dt > timedelta(hours=4):
-            raise Exception("Máximo cuatro horas por reserva")
+            return Result.fail(ApplicationException("Máximo cuatro horas por reserva", ExceptionApplicationType.CONFLICT))
         
         # MESA DISPONIBLE. No pueden haber mas de dos reservas activas para la misma mesa en el mismo horario
         findTable = await self.query_repository.exists_by_table(
@@ -59,7 +60,7 @@ class CreateReservationService(IService[CreateReservationRequest, CreateReservat
             raise findTable.error
         
         if (findTable.value == True):
-            raise Exception("Mesa no disponible")
+            return Result.fail(ApplicationException("Mesa no disponible"))
         
         # Cliente reserva activa en el mismo horario, incluso si son en diferentes restaurantes
         findReser = await self.query_repository.exists_by_date_client(
@@ -69,7 +70,7 @@ class CreateReservationService(IService[CreateReservationRequest, CreateReservat
             client_id= value.client_id
         )
         if (findReser.value == True ):
-            raise Exception("Cliente ya posee una reserva activa en el mismo horario")
+            return Result.fail(ApplicationException("Cliente ya posee una reserva activa en el mismo horario", ExceptionApplicationType.CONFLICT))
         
         # Horario de reserva debe estar dentro del horario de apertura, cierre del restarurante
         restau = await self.query_restau.get_by_id(
@@ -77,7 +78,7 @@ class CreateReservationService(IService[CreateReservationRequest, CreateReservat
         )
         
         if (restau.is_success == False):
-            raise Exception("Restaurante no encontrado")
+            return Result.fail(ApplicationException("Restaurante no encontrado"))
         
         close_time = restau.value.closing_time
         open_time = restau.value.opening_time
@@ -90,8 +91,8 @@ class CreateReservationService(IService[CreateReservationRequest, CreateReservat
         #    raise Exception("Horario de reserva fuera del horario de trabajo del restaurante")
         
         # No pueden haber mas de cinco platos reservados
-        if ( len(value.dish_id) ):
-            raise Exception("No pueden preordenarse mas de 5 platos")
+        if ( len(value.dish_id) > 5 ):
+            return Result.fail(ApplicationException("No pueden preordenarse mas de 5 platos", ExceptionApplicationType.CONFLICT))
         
         # Los platos deben pertenecer al menu del restaurante de la mesa reservada
         #menu = await self.menu_repo.find_by_restaurant_id(restaurant_id=RestaurantIdVo(value.restaurant_id))
@@ -103,7 +104,7 @@ class CreateReservationService(IService[CreateReservationRequest, CreateReservat
         
         listId = []
         for i in value.dish_id:
-            listId.insert( DishIdVo(i) )
+            listId.append( DishIdVo(i) )
         
         await self.command_repository.save(
             Reservation(

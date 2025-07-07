@@ -18,7 +18,7 @@ class ReservationQueryRepositoryMock(IReservationQueryRepository):
         res = next((u for u in self.main_data 
                     if u.date_start.reservation_date_start == date_start
                     and u.date_end.reservation_date_end == date_end
-                    and u.date.reservation_date_end == reservation_date
+                    and u.date.reservation_date == reservation_date
                     and u.client_id.user_id == client_id
                     ), None)
         if res:
