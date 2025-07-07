@@ -1,4 +1,5 @@
-from fastapi import FastAPI, Depends, status, APIRouter
+from fastapi import FastAPI, Depends, Security, status, APIRouter
+from src.auth.infrastructure.middlewares.user_role_verify import UserRoleVerify
 from src.common.infrastructure.middlewares.get_postgresql_session import GetPostgresqlSession
 from src.reservation.application.dtos.request.cancel_reservation_request_dto import CancelReservationRequest
 from src.common.application.aspects.exception_decorator.exception_decorator import ExceptionDecorator
@@ -39,7 +40,8 @@ class CancelReservationController:
         )
         async def cancel(
             entry: CancelReservationRequestController, 
-            service: CancelReservationService = Depends(self.get_service)
+            service: CancelReservationService = Depends(self.get_service),
+            token = Security(UserRoleVerify(), scopes=["client:cancel_reservation"])
             ):
             if service is None:
                 raise RuntimeError("CancelReservationService not initialized. Did you forget to call init()?")

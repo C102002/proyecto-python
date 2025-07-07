@@ -1,4 +1,5 @@
-from fastapi import FastAPI, Depends, status, APIRouter
+from fastapi import FastAPI, Depends, Security, status, APIRouter
+from src.auth.infrastructure.middlewares.user_role_verify import UserRoleVerify
 from src.common.infrastructure.middlewares.get_postgresql_session import GetPostgresqlSession
 from src.menu.infrastructure.repositories.menu_repository import MenuRepository
 from src.reservation.application.dtos.request.create_reservation_request_dto import CreateReservationRequest
@@ -49,7 +50,8 @@ class CreateReservationController:
         )
         async def create(
             entry: CreateReservationRequestController, 
-            service: CreateReservationService = Depends(self.get_service)
+            service: CreateReservationService = Depends(self.get_service),
+            token = Security(UserRoleVerify(), scopes=["client:create_reservation"])
             ):
             if service is None:
                 raise RuntimeError("CreateReservationService not initialized. Did you forget to call init()?")

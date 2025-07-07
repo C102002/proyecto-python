@@ -9,7 +9,10 @@ ROLE_SCOPES = {
         "client:reserve_table",
         "client:order",
         "client:view_restaurants",
-        "client:view_restaurant"
+        "client:view_restaurant",
+        "client:cancel_reservation",
+        "client:create_reservation",
+        "client:view_reservation"
     ]
 }
 
