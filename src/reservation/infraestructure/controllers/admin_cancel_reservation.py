@@ -2,14 +2,12 @@ from fastapi import FastAPI, Depends, Security, status, APIRouter
 from src.auth.infrastructure.middlewares.user_role_verify import UserRoleVerify
 from src.common.infrastructure.middlewares.get_postgresql_session import GetPostgresqlSession
 from src.reservation.application.dtos.request.admin_cancel_reservation_request_dto import AdminCancelReservationRequest
-from src.reservation.application.dtos.request.cancel_reservation_request_dto import CancelReservationRequest
 from src.common.application.aspects.exception_decorator.exception_decorator import ExceptionDecorator
 from sqlalchemy.ext.asyncio import AsyncSession
 from src.common.infrastructure.error_handler.fast_api_error_handler import FastApiErrorHandler
 from src.reservation.application.services.admin_cancel_reservation_service import AdminCancelReservationService
 from src.reservation.application.services.cancel_reservation_service import CancelReservationService
-from src.reservation.infraestructure.dtos.admin_cancel_reservation_request import AdminCancelReservationRequestController
-from src.reservation.infraestructure.dtos.cancel_reservation_request import CancelReservationRequestController
+from src.reservation.infraestructure.dtos.admin_cancel_reservation_inf_request_dto import AdminCancelReservationInfRequestDto
 from src.reservation.infraestructure.repositories.command.orm_reservation_command_repository import OrmReservationCommandRepository
 from src.reservation.infraestructure.repositories.query.orm_reservation_query_repository import OrmReservationQueryRepository
 
@@ -42,7 +40,7 @@ class AdminCancelReservationController:
             response_description="Devuelve 201"
         )
         async def cancel(
-            entry: AdminCancelReservationRequestController, 
+            entry: AdminCancelReservationInfRequestDto, 
             service: AdminCancelReservationService = Depends(self.get_service),
             token = Security(UserRoleVerify(), scopes=["admin:manage"])
             ):

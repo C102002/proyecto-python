@@ -95,7 +95,8 @@ class OrmReservationQueryRepository(IReservationQueryRepository):
                     reservation_date=(orm.reservation_date),
                     status=(orm.status),
                     table_number_id=(orm.table_number_id),
-                    restaurant_id=orm.restaurant_id
+                    restaurant_id=orm.restaurant_id,
+                    dish=[]
                 )
                 resers.append(v)
             return Result.success(resers)

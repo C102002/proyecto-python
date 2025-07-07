@@ -6,16 +6,24 @@ from ..repositories.query.orm_user_query_repository import OrmUserQueryRepositor
 from sqlalchemy.ext.asyncio import AsyncSession
 
 class UserRoleVerify:
+    async def __call__(self,
+                       scopes: SecurityScopes,
+                       decoded: dict = Depends(JwtTransformer()),
+                       db: AsyncSession = Depends(GetPostgresqlSession())):
 
-    async def __call__(self, scopes: SecurityScopes, decode_token: dict = Depends(JwtTransformer()), postgres_session: AsyncSession = Depends(GetPostgresqlSession())):
+        repo = OrmUserQueryRepository(db)
+        res  = await repo.get_user_email(decoded["sub"])
+        if res.is_error:
+            raise HTTPException(404, "User not found")
 
-        user_query_repository = OrmUserQueryRepository(postgres_session)
+        user = res.value  # supongamos que aquí tienes tu modelo con .id, .email, etc.
 
-        user = await user_query_repository.get_user_email(decode_token["sub"])
-        if user.is_error:
-            raise HTTPException(status_code=404, detail="User not found")
-                
-        if not set(scopes.scopes).intersection(set(decode_token["scopes"])):
-            raise HTTPException(status_code=403, detail="Forbidden: Client attempts to access admin endpoint.")
+        # comprobación de scopes…
+        if not set(scopes.scopes).intersection(decoded["scopes"]):
+            raise HTTPException(403, "Forbidden")
 
-        return decode_token["sub"]
+        return {
+            "user_id":   user.id.user_id,
+            "email":     user.email.email,
+            "scopes":    decoded["scopes"]
+        }

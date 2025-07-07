@@ -8,7 +8,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from src.common.infrastructure.error_handler.fast_api_error_handler import FastApiErrorHandler
 from src.common.infrastructure.id_generator.uuid_generator import UuidGenerator
 from src.reservation.application.services.create_reservation_service import CreateReservationService
-from src.reservation.infraestructure.dtos.create_reservation_request import CreateReservationRequestController
+from src.reservation.infraestructure.dtos.create_reservation_inf_request_dto import CreateReservationInfRequestDto
 from src.reservation.infraestructure.repositories.command.orm_reservation_command_repository import OrmReservationCommandRepository
 from src.reservation.infraestructure.repositories.query.orm_reservation_query_repository import OrmReservationQueryRepository
 from src.restaurant.infraestructure.repositories.query.orm_restaurant_query_repository import OrmRestaurantQueryRepository
@@ -49,16 +49,17 @@ class CreateReservationController:
             response_description="Devuelve 201"
         )
         async def create(
-            entry: CreateReservationRequestController, 
+            entry: CreateReservationInfRequestDto, 
             service: CreateReservationService = Depends(self.get_service),
-            token = Security(UserRoleVerify(), scopes=["client:create_reservation"])
+            token:dict = Security(UserRoleVerify(), scopes=["client:create_reservation"])
             ):
             if service is None:
                 raise RuntimeError("CreateReservationService not initialized. Did you forget to call init()?")
+                        
             service = ExceptionDecorator(service, FastApiErrorHandler())
             await service.execute(
                 CreateReservationRequest(
-                    client_id=entry.client_id,
+                    client_id=token["user_id"],
                     date_start=entry.date_start,
                     date_end=entry.date_end,
                     restaurant_id=entry.restaurant_id,

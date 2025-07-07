@@ -28,7 +28,7 @@ class FindActiveReservationController:
 
     def setup_routes(self):
         @reservation_router.get(
-            "/find-active/{client_id}",
+            "/find-active/",
             response_model=None,
             status_code=status.HTTP_200_OK,
             summary="Encontrar reservaciones activaes",
@@ -36,7 +36,6 @@ class FindActiveReservationController:
             response_description="Devuelve una lista de reservaciones"
         )
         async def find(
-            client_id: str = Path(..., description="ID del cliente"),
             service: FindActiveReservationByClientService = Depends(self.get_service),
             token = Security(UserRoleVerify(), scopes=["client:view_reservation"])
             ):
@@ -45,7 +44,7 @@ class FindActiveReservationController:
             service = ExceptionDecorator(service, FastApiErrorHandler())
             result = await service.execute(
                 FindActiveReservationRequest(
-                    client_id=client_id
+                    client_id=token["user_id"]
                 )
             )
             return result.value

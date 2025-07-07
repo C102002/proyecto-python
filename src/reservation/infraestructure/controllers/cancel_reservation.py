@@ -6,7 +6,7 @@ from src.common.application.aspects.exception_decorator.exception_decorator impo
 from sqlalchemy.ext.asyncio import AsyncSession
 from src.common.infrastructure.error_handler.fast_api_error_handler import FastApiErrorHandler
 from src.reservation.application.services.cancel_reservation_service import CancelReservationService
-from src.reservation.infraestructure.dtos.cancel_reservation_request import CancelReservationRequestController
+from src.reservation.infraestructure.dtos.cancel_reservation_inf_request_dto import CancelReservationInfRequestDto
 from src.reservation.infraestructure.repositories.command.orm_reservation_command_repository import OrmReservationCommandRepository
 from src.reservation.infraestructure.repositories.query.orm_reservation_query_repository import OrmReservationQueryRepository
 
@@ -39,17 +39,19 @@ class CancelReservationController:
             response_description="Devuelve 201"
         )
         async def cancel(
-            entry: CancelReservationRequestController, 
+            entry: CancelReservationInfRequestDto, 
             service: CancelReservationService = Depends(self.get_service),
             token = Security(UserRoleVerify(), scopes=["client:cancel_reservation"])
             ):
             if service is None:
                 raise RuntimeError("CancelReservationService not initialized. Did you forget to call init()?")
             service = ExceptionDecorator(service, FastApiErrorHandler())
-            await service.execute(
+            r=await service.execute(
                 CancelReservationRequest(
                     reservation_id = entry.reservation_id,
-                    client_id = entry.client_id
+                    client_id = token["user_id"]
                 )
             )
+            print(f"result cancel: {r}")
+            
             return None
