@@ -59,6 +59,11 @@ This is a Python API built with FastAPI and managed with Poetry.
     Invoke-Expression (poetry env activate)
     ```
 
+    ```bash
+    # In arch 
+    source $(poetry env info --path)/bin/activate
+    ```
+
     This command will return the path in which the virtual environment is activated, copy and paste that path into the terminal.
 
     If you have multiple environments for your project, you might need to specify the environment name (e.g., `poetry env activate my-env-name`). You can list available environments with `poetry env list`.
@@ -98,7 +103,7 @@ This project includes a `Dockerfile` and `docker-compose.yml` for easy container
 1.  **Build and run the Docker container using Docker Compose:**
 
     ```bash
-    docker-compose up --build
+    docker-compose up -d
     ```
 
     This command will build the Docker image (if it doesn't exist or if changes were made to the Dockerfile) and start the service defined in `docker-compose.yml`.
