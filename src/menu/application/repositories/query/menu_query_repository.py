@@ -6,5 +6,5 @@ from src.restaurant.domain.value_objects.restaurant_id_vo import RestaurantIdVo
 class MenuQueryRepository(ABC):
 
     @abstractmethod
-    def find_by_restaurant_id(self, restaurant_id: RestaurantIdVo) -> Optional[Menu]:
+    async def find_by_restaurant_id(self, restaurant_id: RestaurantIdVo) -> Optional[Menu]:
         pass

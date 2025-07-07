@@ -21,17 +21,17 @@ class MenuService:
         self.menu_command_repository = menu_command_repository
         self.menu_query_repository = menu_query_repository
 
-    def create_menu(self, restaurant_id: str) -> Menu:
+    async def create_menu(self, restaurant_id: str) -> Menu:
         restaurant_id_vo = RestaurantIdVo(restaurant_id)
         menu = Menu(MenuIdVo(), restaurant_id_vo)
-        self.menu_command_repository.save(menu)
+        await self.menu_command_repository.save(menu)
         return menu
 
-    def add_dish_to_menu(self, restaurant_id: str, dish_dto: CreateDishRequestDto) -> Dish:
+    async def add_dish_to_menu(self, restaurant_id: str, dish_dto: CreateDishRequestDto) -> Dish:
         restaurant_id_vo = RestaurantIdVo(restaurant_id)
-        menu = self.menu_query_repository.find_by_restaurant_id(restaurant_id_vo)
+        menu = await self.menu_query_repository.find_by_restaurant_id(restaurant_id_vo)
         if not menu:
-            menu = self.create_menu(restaurant_id)
+            menu = await self.create_menu(restaurant_id)
 
         dish = Dish(
             DishIdVo(),
@@ -42,10 +42,10 @@ class MenuService:
             DishImageVo(dish_dto.image) if dish_dto.image else None
         )
         menu.add_dish(dish)
-        self.menu_command_repository.update(menu)
+        await self.menu_command_repository.update(menu)
         return dish
 
-    def update_dish_in_menu(self, dish_id: str, dish_dto: UpdateDishRequestDto) -> Dish:
+    async def update_dish_in_menu(self, dish_id: str, dish_dto: UpdateDishRequestDto) -> Dish:
         dish_id_vo = DishIdVo(dish_id)
         menu = self.menu_query_repository.find_by_dish_id(dish_id_vo)
         if not menu:
@@ -72,12 +72,12 @@ class MenuService:
             dish_to_update.update_image(DishImageVo(dish_dto.image))
 
         menu.update_dish(dish_to_update)
-        self.menu_command_repository.update(menu)
+        await self.menu_command_repository.update(menu)
         return dish_to_update
 
-    def remove_dish_from_menu(self, dish_id: str):
+    async def remove_dish_from_menu(self, dish_id: str):
         dish_id_vo = DishIdVo(dish_id)
-        menu = self.menu_query_repository.find_by_dish_id(dish_id_vo)
+        menu = await self.menu_query_repository.find_by_dish_id(dish_id_vo)
         if not menu:
             raise Exception("Menu not found for the given dish")
 
@@ -85,8 +85,8 @@ class MenuService:
         has_preorders = False
 
         menu.remove_dish(dish_id, has_preorders)
-        self.menu_command_repository.update(menu)
+        await self.menu_command_repository.update(menu)
 
-    def get_menu_by_restaurant_id(self, restaurant_id: str) -> Menu:
+    async def get_menu_by_restaurant_id(self, restaurant_id: str) -> Menu:
         restaurant_id_vo = RestaurantIdVo(restaurant_id)
-        return self.menu_query_repository.find_by_restaurant_id(restaurant_id_vo)
+        return await self.menu_query_repository.find_by_restaurant_id(restaurant_id_vo)

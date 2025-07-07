@@ -11,3 +11,7 @@ class DishIdVo(ValueObjectRoot["DishIdVo"]):
 
     def equals(self, value: "DishIdVo") -> bool:
         return self.__value == value.__value
+    
+    @property
+    def value(self) -> str:
+        return self.__value

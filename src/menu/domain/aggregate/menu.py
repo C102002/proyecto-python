@@ -1,5 +1,6 @@
 from typing import List
 from src.common.domain.aggregate.aggregate_root import AggregateRoot
+from src.common.domain.domain_event.domain_event_root import DomainEventRoot
 from src.menu.domain.entities.dish import Dish
 from src.menu.domain.value_objects.menu_id_vo import MenuIdVo
 from src.restaurant.domain.value_objects.restaurant_id_vo import RestaurantIdVo
@@ -43,3 +44,9 @@ class Menu(AggregateRoot[MenuIdVo]):
     def remove_category(self, category: str):
         if category in self.categories:
             self.categories.remove(category)
+
+    def when(self, event: DomainEventRoot) -> None:
+        pass
+
+    def validate_state(self) -> None:
+        pass
