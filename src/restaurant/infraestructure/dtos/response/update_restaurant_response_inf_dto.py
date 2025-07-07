@@ -29,7 +29,7 @@ class UpdateRestaurantResponseInfDTO(BaseModel):
 
     class Config:
         title = "UpdateRestaurantResponseInfDTO"
-        schema_extra = {
+        json_schema_extra = {
             "example": {
                 "id": "87083ac1-4700-4c08-9b7c-fc3676a7ad6e",
                 "lat": 10.4806,

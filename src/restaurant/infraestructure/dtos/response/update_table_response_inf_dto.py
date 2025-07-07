@@ -20,7 +20,7 @@ class UpdateTableResponseInfDTO(BaseModel):
 
     class Config:
         title = "UpdateTableResponseInfDTO"
-        schema_extra = {
+        json_schema_extra = {
             "example": {
                 "number": "1",
                 "capacity": 4,
