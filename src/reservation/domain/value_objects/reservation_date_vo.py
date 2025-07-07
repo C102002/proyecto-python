@@ -16,5 +16,5 @@ class ReservationDateVo(ValueObjectRoot["ReservationDateVo"]):
         return self.__reservation_date == value.__reservation_date
     
     @property
-    def reservation_date_end(self) -> date:
+    def reservation_date(self) -> date:
         return self.__reservation_date

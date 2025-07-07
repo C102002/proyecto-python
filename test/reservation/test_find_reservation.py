@@ -1,21 +1,9 @@
-from fastapi.testclient import TestClient
-from src.main import app
 import pytest
-from dotenv import load_dotenv
-import asyncio
-import platform
-
-if platform.system() == "Windows":
-    asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
-
-load_dotenv()
-
-client = TestClient(app)
+from src.reservation.application.dtos.request.find_reservation_request_dto import FindReservationRequest
 
 @pytest.mark.asyncio
-async def test_reservation_find_sucess():
-    response = client.get("/reservation/find")
-    assert response.status_code == 201
-    #response_data = response.json()
-    #assert response_data is None
+async def test_reservation_find_success(service):
+    request = FindReservationRequest()
+    response = await service.execute(request)
+    assert response.status_code == 200
     

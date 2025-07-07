@@ -21,7 +21,7 @@ class OrmReservationCommandRepository(IReservationCommandRepository):
                 client_id=entry.client_id.user_id,
                 table_number_id = entry.table_number_id.table_number_id,
                 restaurant_id=entry.restaurant_id.restaurant_id,
-                reservation_date=entry.date.reservation_date_end
+                reservation_date=entry.date.reservation_date
             )
             self.session.add(orm)
             await self.session.commit()
