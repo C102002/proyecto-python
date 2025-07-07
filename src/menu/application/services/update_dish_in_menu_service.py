@@ -19,7 +19,7 @@ class UpdateDishInMenuService(IService[UpdateDishRequestDto, Dish]):
     
     async def execute(self, value: UpdateDishRequestDto) -> Result[Dish]:
         dish_id_vo = DishIdVo(value.dish_id)
-        menu = self.menu_query_repository.find_by_dish_id(dish_id_vo)
+        menu = await self.menu_query_repository.find_by_dish_id(dish_id_vo)
         if not menu:
             return Result.fail(ApplicationException("Menu not found for the given dish"))
 

@@ -11,7 +11,7 @@ from ...repositories.command.orm_menu_command_repository import OrmMenuCommandRe
 from ...repositories.query.orm_menu_query_repository import OrmMenuQueryRepository
 from src.common.infrastructure import GetPostgresqlSession
 
-class UpdateDishInMenu:
+class UpdateDishInMenuController:
     def __init__(self, app: FastAPI):
         self.app = app
         self.setup_routes()
