@@ -9,7 +9,7 @@ from src.menu.domain.value_objects.dish_id_vo import DishIdVo
 from src.menu.domain.value_objects.dish_image_vo import DishImageVo
 from src.menu.domain.value_objects.dish_name_vo import DishNameVo
 from src.menu.domain.value_objects.dish_price_vo import DishPriceVo
-from src.common.application import IService, ApplicationException
+from src.common.application import IService, ApplicationException, ExceptionApplicationType
 
 class UpdateDishInMenuService(IService[UpdateDishRequestDto, Dish]):
 
@@ -22,6 +22,11 @@ class UpdateDishInMenuService(IService[UpdateDishRequestDto, Dish]):
         menu = await self.menu_query_repository.find_by_dish_id(dish_id_vo)
         if not menu:
             return Result.fail(ApplicationException("Menu not found for the given dish"))
+
+        listDishName = [dish.name.value for dish in menu.dishes]
+
+        if (value.name is not None) and (value.name in listDishName):
+            return Result.fail(ApplicationException("There is already a dish with that name", ExceptionApplicationType.CONFLICT))
 
         dish_to_update = None
         for dish in menu.dishes:
