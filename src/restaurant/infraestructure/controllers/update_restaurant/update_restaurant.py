@@ -1,7 +1,8 @@
 # app/controllers/update_restaurant_controller.py
-from fastapi import Depends, FastAPI, Path, Body, status
+from fastapi import Depends, FastAPI, Path, Body, Security, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from src.auth.infrastructure.middlewares.user_role_verify import UserRoleVerify
 from src.common.application.aspects.exception_decorator.exception_decorator import ExceptionDecorator
 from src.common.infrastructure.error_handler.fast_api_error_handler import FastApiErrorHandler
 from src.common.infrastructure.middlewares.get_postgresql_session import GetPostgresqlSession
@@ -49,6 +50,7 @@ class UpdateRestaurantController:
                 ..., description="Campos a actualizar (todos opcionales)"
             ),
             service: UpdateRestaurantService = Depends(self.get_service),
+            token = Security(UserRoleVerify(), scopes=["admin:manage"])
         ):
             decorator = ExceptionDecorator(
                 service=service,

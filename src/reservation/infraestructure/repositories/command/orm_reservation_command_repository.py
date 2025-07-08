@@ -33,7 +33,7 @@ class OrmReservationCommandRepository(IReservationCommandRepository):
         
     async def update(self, entry: Reservation) -> Result[Reservation]:
         try:
-            stmt = select(OrmReservationModel).where(OrmReservationModel.id == entry._id)
+            stmt = select(OrmReservationModel).where(OrmReservationModel.id == entry._id.reservation_id)
             result = await self.session.execute(stmt)
             to_update = result.scalar_one_or_none()
             if to_update is None:

@@ -16,7 +16,6 @@ class JwtGenerator(ITokenGenerator):
         assert secret is not None, "La variable JWT_SECRET no está definida"
         self.secret = secret
 
-
     def generate_token(self, data: dict, role: UserRoleEnum) -> str:
         data_copy = data.copy()
         expires = datetime.now(timezone.utc) + timedelta(minutes=15)
@@ -26,7 +25,7 @@ class JwtGenerator(ITokenGenerator):
         roles = ROLE_SCOPES.get(UserRoleEnum.CLIENT, [])
 
         if (role == UserRoleEnum.ADMIN):
-            roles = ROLE_SCOPES.get(role, []) + ROLE_SCOPES.get(UserRoleEnum.CLIENT, [])
+            roles = ROLE_SCOPES.get(UserRoleEnum.ADMIN, []) 
         
         data_copy.update({"scopes": roles})
 

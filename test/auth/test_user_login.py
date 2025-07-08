@@ -5,6 +5,7 @@ from fastapi import HTTPException
 
 
 
+@pytest.mark.order(1)
 @pytest.mark.asyncio
 async def test_user_login_success(user_login_service, user_register_service):
     

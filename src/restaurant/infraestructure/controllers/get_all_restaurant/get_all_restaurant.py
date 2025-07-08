@@ -1,8 +1,9 @@
 from typing import List
 
-from fastapi import Depends, FastAPI, status
+from fastapi import Depends, FastAPI, Security, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from src.auth.infrastructure.middlewares.user_role_verify import UserRoleVerify
 from src.common.application.aspects.exception_decorator.exception_decorator import ExceptionDecorator
 from src.common.infrastructure.error_handler.fast_api_error_handler import FastApiErrorHandler
 from src.common.infrastructure.middlewares.get_postgresql_session import GetPostgresqlSession
@@ -39,6 +40,7 @@ class GetAllRestaurantController:
             # <— inyectamos el DTO como dependencia, FastAPI lo llena desde ?page=…&size=…
             input_dto: GetAllRestaurantRequestInfDTO = Depends(),
             service: GetAllRestaurantService = Depends(self.get_query_service),
+            token = Security(UserRoleVerify(), scopes=["admin:manage","client:view_restaurant"])
         ):
             decorated = ExceptionDecorator(
                 service=service,

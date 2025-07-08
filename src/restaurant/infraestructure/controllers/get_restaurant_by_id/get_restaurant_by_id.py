@@ -1,7 +1,8 @@
 # app/controllers/get_restaurant_by_id_controller.py
-from fastapi import Depends, FastAPI, Path, status
+from fastapi import Depends, FastAPI, Path, Security, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from src.auth.infrastructure.middlewares.user_role_verify import UserRoleVerify
 from src.common.application.aspects.exception_decorator.exception_decorator import ExceptionDecorator
 from src.common.infrastructure.error_handler.fast_api_error_handler import FastApiErrorHandler
 from src.common.infrastructure.middlewares.get_postgresql_session import GetPostgresqlSession
@@ -41,6 +42,7 @@ class GetRestaurantByIdController:
         async def get_restaurant_by_id(
             restaurant_id: str = Path(..., description="ID del restaurante"),
             service: GetRestaurantByIdService = Depends(self.get_by_id_service),
+            token = Security(UserRoleVerify(), scopes=["admin:manage","client:view_restaurants","client:read_user"])
         ):
             decorated = ExceptionDecorator(
                 service=service,

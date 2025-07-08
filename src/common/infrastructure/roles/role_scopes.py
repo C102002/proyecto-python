@@ -7,7 +7,12 @@ ROLE_SCOPES = {
         "client:read_user",
         "client:write_user",
         "client:reserve_table",
-        "client:order"
+        "client:order",
+        "client:view_restaurants",
+        "client:view_restaurant",
+        "client:cancel_reservation",
+        "client:create_reservation",
+        "client:view_reservation"
     ]
 }
 
