@@ -11,7 +11,7 @@ from src.dashboard.infraestructure.dtos.request.get_reservation_count_request_in
     GetReservationCountRequestInfDTO,
 )
 from src.dashboard.infraestructure.dtos.response.get_reservation_count_response_inf_dto import (
-    GetOccupancyPercentageResponseInfDTO,
+    GetReservationCountResponseInfDTO,
 )
 from src.dashboard.infraestructure.repositories.query.orm_dashboard_query_repository import OrmDashboardQueryRepository
 from src.dashboard.infraestructure.routers.dashboard_router import dashboard_router
@@ -32,7 +32,7 @@ class GetReservationCountController:
     def setup_routes(self):
         @dashboard_router.get(
             "/reservations/count",
-            response_model=GetOccupancyPercentageResponseInfDTO,
+            response_model=GetReservationCountResponseInfDTO,
             status_code=status.HTTP_200_OK,
             summary="Get reservation count",
             description="Returns total number of reservations grouped by DAY or WEEK",
@@ -47,10 +47,13 @@ class GetReservationCountController:
                 service=service,
                 error_handler=FastApiErrorHandler()
             )
-            result = await decorated.execute(input_dto)
+            app_dto = input_dto.to_dto()
+            result = await decorated.execute(app_dto)
             data = result.value
+            
+            print(f"llego {data}")
 
-            return GetOccupancyPercentageResponseInfDTO(
+            return GetReservationCountResponseInfDTO(
                 period_type=data.period_type,
                 count=data.count
             )

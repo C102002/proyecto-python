@@ -72,11 +72,9 @@ class OrmDashboardQueryRepository(IDashboardQueryRepository):
             )
             return Result.success(response)
 
-        except InfrastructureException as ie:
-            return Result.fail(ie)
         except Exception as e:
             return Result.fail(
-                InfrastructureException(str(e), infra_type=ExceptionInfrastructureType.UNKNOWN)
+                InfrastructureException(str(e), infra_type=ExceptionInfrastructureType.BAD_REQUEST)
             )
 
     async def get_top_preordered_dishes(
@@ -114,8 +112,6 @@ class OrmDashboardQueryRepository(IDashboardQueryRepository):
             ]
             return Result.success(dishes)
 
-        except InfrastructureException as ie:
-            return Result.fail(ie)
         except Exception as e:
             return Result.fail(
                 InfrastructureException(str(e), infra_type=ExceptionInfrastructureType.BAD_REQUEST)
