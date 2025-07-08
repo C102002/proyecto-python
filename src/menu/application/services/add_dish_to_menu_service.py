@@ -13,7 +13,7 @@ from src.menu.domain.value_objects.dish_name_vo import DishNameVo
 from src.menu.domain.value_objects.dish_price_vo import DishPriceVo
 from src.menu.domain.value_objects.menu_id_vo import MenuIdVo
 from src.restaurant.domain.value_objects.restaurant_id_vo import RestaurantIdVo
-from src.common.application import IService
+from src.common.application import IService, ApplicationException, ExceptionApplicationType
 
 
 class AddDishToMenuService(IService[CreateDishRequestDto, Dish]):
@@ -25,10 +25,16 @@ class AddDishToMenuService(IService[CreateDishRequestDto, Dish]):
     async def execute(self, value: CreateDishRequestDto) -> Result[Dish]:
         restaurant_id_vo = RestaurantIdVo(value.restaurant_id)
         menu = await self.menu_query_repository.find_by_restaurant_id(restaurant_id_vo)
+
         if not menu:
             restaurant_id_vo = RestaurantIdVo(value.restaurant_id)
             menu = Menu(MenuIdVo(), restaurant_id_vo)
             await self.menu_command_repository.save(menu)
+        else:
+            listDishName = [dish.name.value for dish in menu.dishes]
+
+            if (value.name in listDishName):
+                return Result.fail(ApplicationException("There is already a dish with that name", ExceptionApplicationType.CONFLICT))
 
         dish = Dish(
             DishIdVo(),
