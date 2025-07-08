@@ -1,6 +1,5 @@
 from fastapi import FastAPI, Depends, status, APIRouter
 from src.common.infrastructure.middlewares.get_postgresql_session import GetPostgresqlSession
-from src.menu.infrastructure.repositories.menu_repository import MenuRepository
 from src.reservation.application.dtos.request.create_reservation_request_dto import CreateReservationRequest
 from src.common.application.aspects.exception_decorator.exception_decorator import ExceptionDecorator
 from sqlalchemy.ext.asyncio import AsyncSession
