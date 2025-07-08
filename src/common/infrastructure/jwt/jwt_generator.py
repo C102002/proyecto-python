@@ -25,7 +25,7 @@ class JwtGenerator(ITokenGenerator):
         roles = ROLE_SCOPES.get(UserRoleEnum.CLIENT, [])
 
         if (role == UserRoleEnum.ADMIN):
-            roles = ROLE_SCOPES.get(role, []) + ROLE_SCOPES.get(UserRoleEnum.CLIENT, [])
+            roles = ROLE_SCOPES.get(UserRoleEnum.ADMIN, []) 
         
         data_copy.update({"scopes": roles})
 

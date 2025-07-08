@@ -8,6 +8,18 @@ class Result(Generic[T]):
     def __init__(self, value: Optional[T] = None, error: Optional[BaseException] = None):
         self._value = value
         self._error = error
+        
+    def __repr__(self):
+        return (
+            f"<Result("
+            f"success={self.is_success}, "
+            f"value={self._value!r}, "
+            f"error={self._error!r}"
+            f")>"
+        )
+
+    # Opcional: __str__ igual a repr para que print(...) también lo use
+    __str__ = __repr__
 
     @property
     def is_error(self) -> bool:

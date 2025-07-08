@@ -1,7 +1,8 @@
 # app/controllers/create_table_controller.py
-from fastapi import Depends, FastAPI, Path, status
+from fastapi import Depends, FastAPI, Path, Security, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from src.auth.infrastructure.middlewares.user_role_verify import UserRoleVerify
 from src.common.application.aspects.exception_decorator.exception_decorator import ExceptionDecorator
 from src.common.infrastructure.error_handler.fast_api_error_handler import FastApiErrorHandler
 from src.common.infrastructure.middlewares.get_postgresql_session import GetPostgresqlSession
@@ -46,6 +47,7 @@ class CreateTableController:
             input_dto: CreateTableRequestInfDTO,
             restaurant_id: str = Path(..., description="UUID of the restaurant"),
             service: CreateTableService = Depends(self.get_service),
+            token = Security(UserRoleVerify(), scopes=["admin:manage"])
         ):
             decorator = ExceptionDecorator(
                 service=service,

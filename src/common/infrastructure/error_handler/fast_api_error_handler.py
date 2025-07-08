@@ -70,7 +70,10 @@ class FastApiErrorHandler(IErrorHandler):
         return HTTPException(status_code=code, detail=message)
 
     def to_http(self, error: BaseException, message: str) -> Exception:
-        print(f"error del mapper: {error!r}")
+        print(f"error en el handler")
+        print(f"valor {error}")
+        
+        
         if error.type == BaseExceptionEnum.DOMAIN_EXCEPTION:
             return self._handle_domain_exception(error,message)
         elif error.type == BaseExceptionEnum.APPLICATION_EXCEPTION:
