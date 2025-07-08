@@ -68,7 +68,7 @@ class MenuModel(SQLModel, table=True):
 
     @staticmethod
     def from_domain(menu: "Menu"):
-        menu_model = MenuModel(id=str(menu.id.value), restaurant_id=str(menu.restaurant_id.value))
+        menu_model = MenuModel(id=str(menu.id.value), restaurant_id=str(menu.restaurant_id.restaurant_id))
         menu_model.dishes = [DishModel.from_domain(dish) for dish in menu.dishes]
         return menu_model
 
@@ -84,4 +84,26 @@ class MenuModel(SQLModel, table=True):
         )
 
     def update_from_domain(self, menu: "Menu"):
-        self.dishes = [DishModel.from_domain(dish) for dish in menu.dishes]
+        incoming_dish_map = {str(d.id.value): d for d in menu.dishes}
+        
+        dishes_to_remove = []
+        for db_dish in self.dishes:
+            if db_dish.id not in incoming_dish_map:
+                dishes_to_remove.append(db_dish)
+
+        for dish_to_del in dishes_to_remove:
+            self.dishes.remove(dish_to_del)
+
+        for domain_dish_id, domain_dish_data in incoming_dish_map.items():
+            found_existing_dish = next((d for d in self.dishes if d.id == domain_dish_id), None)
+
+            if found_existing_dish:
+                found_existing_dish.name = domain_dish_data.name.value
+                found_existing_dish.description = domain_dish_data.description.value
+                found_existing_dish.price = domain_dish_data.price.value
+                found_existing_dish.category = domain_dish_data.category.value
+                found_existing_dish.image = domain_dish_data.image.value if domain_dish_data.image else None
+                found_existing_dish.is_available = domain_dish_data.is_available
+            else:
+                new_dish_model = DishModel.from_domain(domain_dish_data)
+                self.dishes.append(new_dish_model)
