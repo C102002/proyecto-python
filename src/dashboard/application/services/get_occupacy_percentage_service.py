@@ -28,8 +28,9 @@ class GetOccupancyPercentageService(
         occupancies = await self.dashboard_query_repository.get_occupancy_percentage_by_restaurant(
             dto=value
         )
+        
 
         if occupancies.is_error:
-            return Result.fail(occupancies.fail)
+            return Result.fail(occupancies.error)
 
-        return Result.success(occupancies)
+        return Result.success(occupancies.value)

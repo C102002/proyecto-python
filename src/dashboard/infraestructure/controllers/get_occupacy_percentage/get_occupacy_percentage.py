@@ -46,7 +46,10 @@ class GetOccupancyPercentageController:
                 service=service,
                 error_handler=FastApiErrorHandler()
             )
-            result = await decorated.execute(input_dto)
+            
+            app_dto = input_dto.to_dto()
+            result = await decorated.execute(app_dto)
+            
             occupancies = result.value
 
             return [
