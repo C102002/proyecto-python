@@ -1,18 +1,9 @@
 from typing import List, Optional
-from sqlalchemy import Column, String, Float, Boolean, Table, ForeignKey
 from sqlmodel import Field, Relationship, SQLModel
 
-from src.common.infrastructure.database import Base
 from src.menu.domain.aggregate.menu import Menu
 from src.menu.domain.entities.dish import Dish
-from src.restaurant.infraestructure.models.orm_restaurant_model import OrmRestaurantModel
-
-menu_dish_association = Table(
-    'menu_dish_association',
-    Base.metadata,
-    Column('menu_id', String, ForeignKey('menus.id')),
-    Column('dish_id', String, ForeignKey('dishes.id'))
-)
+from .reservation_dishes_association import OrmReservationDishModel
 
 class DishModel(SQLModel, table=True):
     __tablename__ = 'dishes'
@@ -27,6 +18,7 @@ class DishModel(SQLModel, table=True):
     menu_id: Optional[str] = Field(default=None, foreign_key="menus.id")
 
     menu: "MenuModel" = Relationship(back_populates="dishes")
+    reservations: List["OrmReservationDishModel"] = Relationship(back_populates="dish")
 
     @staticmethod
     def from_domain(dish: "Dish"):

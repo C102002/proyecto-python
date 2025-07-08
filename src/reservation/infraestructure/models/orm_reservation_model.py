@@ -1,5 +1,7 @@
-from sqlmodel import Field, SQLModel
+from sqlmodel import Field, SQLModel, Relationship
 from datetime import time, date
+from typing import List
+from src.menu.infrastructure.models.reservation_dishes_association import OrmReservationDishModel
 
 class OrmReservationModel(SQLModel, table=True):
 
@@ -13,7 +15,9 @@ class OrmReservationModel(SQLModel, table=True):
     table_number_id: str = Field(nullable=False)
     reservation_date: date = Field(nullable=False, index=True)
     restaurant_id: str = Field(nullable=False)
-    
+
+    dishes: List["OrmReservationDishModel"] = Relationship(back_populates="reservation")
+
     def create_reservation(self, id: str, dateStart: str, dateEnd: str, clientID: str, status: str, reservation_date: date, table_number_id: str, restaurant_id: str) -> "OrmReservationModel":
         return OrmReservationModel(
             id=id,
