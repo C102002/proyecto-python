@@ -1,6 +1,8 @@
 from fastapi import FastAPI, Depends, Security, status, APIRouter
 from src.auth.infrastructure.middlewares.user_role_verify import UserRoleVerify
+from src.common.application.notifier.notifier import Notifier
 from src.common.infrastructure.middlewares.get_postgresql_session import GetPostgresqlSession
+from src.common.infrastructure.notifier.notifier import RichLoggerNotifier
 from src.menu.infrastructure.repositories.menu_repository import MenuRepository
 from src.reservation.application.dtos.request.create_reservation_request_dto import CreateReservationRequest
 from src.common.application.aspects.exception_decorator.exception_decorator import ExceptionDecorator
@@ -57,7 +59,7 @@ class CreateReservationController:
                 raise RuntimeError("CreateReservationService not initialized. Did you forget to call init()?")
                         
             service = ExceptionDecorator(service, FastApiErrorHandler())
-            await service.execute(
+            response=await service.execute(
                 CreateReservationRequest(
                     client_id=token["user_id"],
                     date_start=entry.date_start,
@@ -68,4 +70,17 @@ class CreateReservationController:
                     dish_id=entry.dish_id
                 )
             )
+            
+            notfier:Notifier=RichLoggerNotifier()
+            
+            notfier.notify(f"Notificación: Reserva confirmada para {entry.reservation_date} en {entry.restaurant_id}.")
+            
+            result= response.value
+            
+            if result.dishes:
+                n_platos = len(result.dishes)
+                notfier.notify(
+                    f"Notificación: Pre-orden con {n_platos} platos."
+                )
+            
             return None

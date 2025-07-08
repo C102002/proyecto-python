@@ -115,9 +115,8 @@ class CreateReservationService(IService[CreateReservationRequest, CreateReservat
         listId = []
         for i in value.dish_id:
             listId.append( DishIdVo(i) )
-        
-        save_result=await self.command_repository.save(
-            Reservation(
+            
+        reservation = Reservation(
                 client_id=UserIdVo(value.client_id),
                 id=ReservationIdVo(id),
                 date_end=ReservationDateEndVo(value.date_end),
@@ -128,11 +127,14 @@ class CreateReservationService(IService[CreateReservationRequest, CreateReservat
                 restaurant_id=RestaurantIdVo(value.restaurant_id),
                 dish=listId
             )
+        
+        save_result=await self.command_repository.save(
+            reservation
         )
         
         if save_result.is_error:
             return Result.fail(save_result.error)
         
-        response = CreateReservationResponse(id=id)
+        response = CreateReservationResponse.from_domain(r=reservation)
         return Result.success(response)
 

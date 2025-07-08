@@ -1,6 +1,8 @@
 from fastapi import FastAPI, Depends, Security, status, APIRouter
 from src.auth.infrastructure.middlewares.user_role_verify import UserRoleVerify
+from src.common.application.notifier.notifier import Notifier
 from src.common.infrastructure.middlewares.get_postgresql_session import GetPostgresqlSession
+from src.common.infrastructure.notifier.notifier import RichLoggerNotifier
 from src.reservation.application.dtos.request.cancel_reservation_request_dto import CancelReservationRequest
 from src.common.application.aspects.exception_decorator.exception_decorator import ExceptionDecorator
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -52,6 +54,10 @@ class CancelReservationController:
                     client_id = token["user_id"]
                 )
             )
-            print(f"result cancel: {r}")
+            
+            notfier:Notifier=RichLoggerNotifier()
+            
+            notfier.notify(f"Notificación: Reserva cancelada (ID: {entry.reservation_id}).")
+            
             
             return None

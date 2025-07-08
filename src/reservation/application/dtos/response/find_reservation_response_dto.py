@@ -40,7 +40,7 @@ class ReservationResponse:
             status=r.status.reservation_status,
             table_number_id=r.table_number_id.table_number_id,
             restaurant_id=r.restaurant_id.restaurant_id,
-            dishes=[d.id for d in r.dish],
+            dishes=[d.__value for d in r.dish] or [],
         )
 
 class FindReservationResponse:
