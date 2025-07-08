@@ -22,7 +22,8 @@ from src.reservation.domain.value_objects.reservation_status_vo import Reservati
 from src.restaurant.application.repositories.query.restaurant_query_repository import IRestaurantQueryRepository
 from src.restaurant.domain.entities.value_objects.table_number_id_vo import TableNumberId
 from src.restaurant.domain.value_objects.restaurant_id_vo import RestaurantIdVo
-from src.common.application import ApplicationException, ExceptionApplicationType
+from src.menu.application.repositories.query.menu_query_repository import MenuQueryRepository
+from src.common.application import ApplicationException
 
 class CreateReservationService(IService[CreateReservationRequest, CreateReservationResponse]):
 
@@ -32,14 +33,14 @@ class CreateReservationService(IService[CreateReservationRequest, CreateReservat
         command_reser: IReservationCommandRepository,
         query_restau: IRestaurantQueryRepository,
         id_generator: IIdGenerator,
-        #menu_repo: MenuRepository
+        menu_repo: MenuQueryRepository
         ):
         super().__init__()
         self.query_repository = query_reser
         self.command_repository = command_reser
         self.id_generator = id_generator
         self.query_restau = query_restau
-        #self.menu_repo = menu_repo
+        self.menu_repo = menu_repo
         
     async def execute(self, value: CreateReservationRequest) -> Result[CreateReservationResponse]:
         
@@ -114,6 +115,17 @@ class CreateReservationService(IService[CreateReservationRequest, CreateReservat
         listId = []
         for i in value.dish_id:
             listId.append( DishIdVo(i) )
+
+        menu = await self.menu_repo.find_by_restaurant_id(RestaurantIdVo(value.restaurant_id))
+
+        if not menu:
+            return Result.fail(ApplicationException("Menu not found"))
+        
+        listDishesMenuId = [d.id.value for d in menu.dishes]
+        listDishesInputId = [d for d in value.dish_id]
+
+        if set(listDishesInputId).issubset(set(listDishesMenuId)) == False:
+            return Result.fail(ApplicationException("One or more dishes entered are not part of the menu"))
             
         reservation = Reservation(
                 client_id=UserIdVo(value.client_id),
@@ -130,7 +142,7 @@ class CreateReservationService(IService[CreateReservationRequest, CreateReservat
         save_result=await self.command_repository.save(
             reservation
         )
-        
+
         if save_result.is_error:
             return Result.fail(save_result.error)
         
