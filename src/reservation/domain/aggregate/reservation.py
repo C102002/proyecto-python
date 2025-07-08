@@ -85,7 +85,7 @@ class Reservation(AggregateRoot["ReservationIdVo"]):
         return self.__table_number_id
 
     @property
-    def dish(self) -> list[Dish]:
+    def dish(self) -> list[DishIdVo]:
         return self.__dish
 
     def update_dish(self, dish: list[DishIdVo]):

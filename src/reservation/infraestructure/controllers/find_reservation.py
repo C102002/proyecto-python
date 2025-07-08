@@ -1,4 +1,5 @@
-from fastapi import FastAPI, Depends, status, APIRouter
+from fastapi import FastAPI, Depends, Security, status, APIRouter
+from src.auth.infrastructure.middlewares.user_role_verify import UserRoleVerify
 from src.common.infrastructure.middlewares.get_postgresql_session import GetPostgresqlSession
 from src.common.application.aspects.exception_decorator.exception_decorator import ExceptionDecorator
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -35,7 +36,8 @@ class FindReservationController:
             response_description="Devuelve una lista de reservaciones"
         )
         async def find(
-            service: FindReservationService = Depends(self.get_service)
+            service: FindReservationService = Depends(self.get_service),
+            token = Security(UserRoleVerify(), scopes=["admin:manage"])
             ):
             if service is None:
                 raise RuntimeError("FindReservationService not initialized. Did you forget to call init()?")
