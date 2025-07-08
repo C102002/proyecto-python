@@ -12,6 +12,10 @@ from dotenv import load_dotenv
 from src.auth.infrastructure.models.orm_user_model import OrmUserModel
 from src.restaurant.infraestructure.models.orm_restaurant_model import OrmRestaurantModel
 from src.restaurant.infraestructure.models.orm_table_model import OrmTableModel
+from src.reservation.infraestructure.models.orm_reservation_model import OrmReservationModel
+from src.menu.infrastructure.models.menu_model import DishModel, MenuModel
+from src.menu.infrastructure.models.reservation_dishes_association import OrmReservationDishModel
+
 from sqlmodel import SQLModel
 import asyncio
 
