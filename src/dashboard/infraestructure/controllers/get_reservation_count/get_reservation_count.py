@@ -51,7 +51,6 @@ class GetReservationCountController:
             result = await decorated.execute(app_dto)
             data = result.value
             
-            print(f"llego {data}")
 
             return GetReservationCountResponseInfDTO(
                 period_type=data.period_type,

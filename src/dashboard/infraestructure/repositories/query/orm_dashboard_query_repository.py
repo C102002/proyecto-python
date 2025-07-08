@@ -55,18 +55,25 @@ class OrmDashboardQueryRepository(IDashboardQueryRepository):
         Count reservations for today or the last 7 days.
         """
         try:
-            today = date.today()
 
-            if dto.period_type == PeriodType.DAY:
-                start_date = today
-            else:  # WEEK
-                start_date = today - timedelta(days=7)
+            today      = date.today()
+            start_date = today
+            
+            if dto.period_type == PeriodType.DAY.value: 
+                end_date   = today
+            else:                   
+                end_date   = today + timedelta(days=6)  
 
-            stmt = select(func.count().label("cnt")).where(
-                OrmReservationModel.reservation_date.between(start_date, today)
+            stmt = (
+                select(func.count().label("cnt"))
+                .where(
+                    OrmReservationModel.reservation_date >= start_date,
+                    OrmReservationModel.reservation_date <= end_date,
+                )
             )
             result = await self.session.execute(stmt)
             count = result.scalar_one()
+
 
             response = GetReservationCountResponseDTO(
                 period_type=dto.period_type, count=count
