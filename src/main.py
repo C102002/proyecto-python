@@ -16,11 +16,14 @@ from src.restaurant.infraestructure.controllers.delete_restaurant_by_id.delete_r
 from src.restaurant.infraestructure.controllers.delete_table_by_id.delete_table_by_id import DeleteTableByIdController
 from src.restaurant.infraestructure.controllers.get_all_restaurant.get_all_restaurant import GetAllRestaurantController
 import faulthandler
-
 from src.restaurant.infraestructure.controllers.get_restaurant_by_id.get_restaurant_by_id import GetRestaurantByIdController
-from src.menu.infrastructure.controllers.menu_controller import MenuController
 from src.restaurant.infraestructure.controllers.update_restaurant.update_restaurant import UpdateRestaurantController
 from src.restaurant.infraestructure.controllers.update_table.update_restaurant import UpdateTableController
+from src.menu.infrastructure.controllers.add_dish_to_menu.add_dish_to_menu import AddDishToMenuController
+from src.menu.infrastructure.controllers.get_dishes_by_restaurant.get_dishes_by_restaurant import GetDishesByRestaurantController
+from src.menu.infrastructure.controllers.remove_dish_from_menu.remove_dish_from_menu import RemoveDishFromMenuController
+from src.menu.infrastructure.controllers.update_dish_in_menu.update_dish_in_menu import UpdateDishInMenuController
+
 faulthandler.enable()           # colócalo en tu módulo principal, p.ej. src/main.py
 
 
@@ -74,4 +77,7 @@ UpdateRestaurantController(app)
 UpdateTableController(app)
 
 # Menu Controllers
-MenuController(app)
+AddDishToMenuController(app)
+GetDishesByRestaurantController(app)
+RemoveDishFromMenuController(app)
+UpdateDishInMenuController(app)
