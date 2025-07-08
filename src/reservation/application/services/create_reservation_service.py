@@ -4,7 +4,6 @@ from src.common.application import IService
 from src.common.application.id_generator.id_generator import IIdGenerator
 from src.common.utils import Result
 from src.menu.domain.value_objects.dish_id_vo import DishIdVo
-from src.menu.infrastructure.repositories.menu_repository import MenuRepository
 from src.reservation.application.dtos.request.create_reservation_request_dto import CreateReservationRequest
 from src.reservation.application.dtos.response.create_reservation_response_dto import CreateReservationResponse
 from src.reservation.application.exceptions.active_reservation_conflict_exception import ActiveReservationConflictException

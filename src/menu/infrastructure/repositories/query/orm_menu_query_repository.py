@@ -1,6 +1,7 @@
 from typing import Optional
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, literal_column
+from sqlalchemy.orm import joinedload
 from src.menu.application.repositories.query.menu_query_repository import MenuQueryRepository
 from src.menu.domain.aggregate.menu import Menu
 from src.menu.domain.value_objects.dish_id_vo import DishIdVo
@@ -13,7 +14,7 @@ class OrmMenuQueryRepository(MenuQueryRepository):
 
     async def find_by_restaurant_id(self, restaurant_id: RestaurantIdVo) -> Optional[Menu]:
         menu_model = await self.session.execute(
-                select(MenuModel).where(literal_column("restaurant_id") == restaurant_id.restaurant_id)
+                select(MenuModel).where(literal_column("restaurant_id") == restaurant_id.restaurant_id).options(joinedload(MenuModel.dishes))
             )
         result = menu_model.scalars().first()
         if result:
@@ -23,12 +24,10 @@ class OrmMenuQueryRepository(MenuQueryRepository):
     async def find_by_dish_id(self, dish_id_vo: DishIdVo) -> Optional[Menu]:
         statement = (
             select(MenuModel)
-            .join(DishModel, literal_column("id") == literal_column("menu_id"))
-            .where(literal_column("id") == dish_id_vo.value)
+            .join(DishModel, MenuModel.id == DishModel.menu_id)
+            .where(DishModel.id == dish_id_vo.value).options(joinedload(MenuModel.dishes))
         )
-        
         result = await self.session.execute(statement)
-        
         menu_model = result.scalars().first()
 
         if menu_model:

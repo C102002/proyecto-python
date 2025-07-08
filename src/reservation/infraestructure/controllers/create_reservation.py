@@ -3,7 +3,6 @@ from src.auth.infrastructure.middlewares.user_role_verify import UserRoleVerify
 from src.common.application.notifier.notifier import Notifier
 from src.common.infrastructure.middlewares.get_postgresql_session import GetPostgresqlSession
 from src.common.infrastructure.notifier.notifier import RichLoggerNotifier
-from src.menu.infrastructure.repositories.menu_repository import MenuRepository
 from src.reservation.application.dtos.request.create_reservation_request_dto import CreateReservationRequest
 from src.common.application.aspects.exception_decorator.exception_decorator import ExceptionDecorator
 from sqlalchemy.ext.asyncio import AsyncSession
