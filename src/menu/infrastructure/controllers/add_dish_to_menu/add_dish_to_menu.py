@@ -47,4 +47,5 @@ class AddDishToMenuController:
             )
             service = ExceptionDecorator(menu_service, FastApiErrorHandler())
             dish = await service.execute(request)
+            print("hola", dish)
             return DishResponseDto.from_domain(dish.value)

@@ -68,7 +68,7 @@ class MenuModel(SQLModel, table=True):
 
     @staticmethod
     def from_domain(menu: "Menu"):
-        menu_model = MenuModel(id=str(menu.id.value), restaurant_id=str(menu.restaurant_id.value))
+        menu_model = MenuModel(id=str(menu.id.value), restaurant_id=str(menu.restaurant_id.restaurant_id))
         menu_model.dishes = [DishModel.from_domain(dish) for dish in menu.dishes]
         return menu_model
 

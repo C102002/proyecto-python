@@ -11,11 +11,17 @@ class OrmMenuCommandRepository(MenuCommandRepository):
     async def save(self, menu: Menu) -> None:
         menu_model = MenuModel.from_domain(menu)
         self.session.add(menu_model)
+        await self.session.commit()
+        print("debug")
 
     async def update(self, menu: Menu) -> None:
         menu_model = await self.session.execute(
                 select(MenuModel).where(literal_column("id") == menu.id.value)
             )
         result = menu_model.scalars().first()
+        print("haciendo debug", result)
         if result:
             result.update_from_domain(menu)
+            self.session.add(result)
+            await self.session.commit()
+
