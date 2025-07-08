@@ -24,7 +24,7 @@ class AdminCancelReservationController:
     async def get_service(self, postgres_session: AsyncSession = Depends(GetPostgresqlSession())):
         query_repository = OrmReservationQueryRepository(postgres_session)
         command_repository = OrmReservationCommandRepository(postgres_session)
-        service = CancelReservationService(
+        service = AdminCancelReservationService(
             query_reser=query_repository,
             command_reser=command_repository,
         )

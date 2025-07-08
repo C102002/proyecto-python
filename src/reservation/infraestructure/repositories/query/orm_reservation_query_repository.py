@@ -1,16 +1,41 @@
 from datetime import date, time
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import and_, select, literal_column
+from src.auth.domain.value_objects.user_id_vo import UserIdVo
+from src.common.infrastructure.infrastructure_exception.enum.infraestructure_exception_type import ExceptionInfrastructureType
 from src.common.utils import Result
 from src.common.infrastructure import InfrastructureException
 from src.reservation.application.repositories.query.reservation_query_repository import IReservationQueryRepository
 from src.reservation.domain.aggregate.reservation import Reservation
+from src.reservation.domain.value_objects.reservation_date_end_vo import ReservationDateEndVo
+from src.reservation.domain.value_objects.reservation_date_start_vo import ReservationDateStartVo
+from src.reservation.domain.value_objects.reservation_date_vo import ReservationDateVo
+from src.reservation.domain.value_objects.reservation_id_vo import ReservationIdVo
+from src.reservation.domain.value_objects.reservation_status_vo import ReservationStatusVo
 from src.reservation.infraestructure.models.orm_reservation_model import OrmReservationModel
+from src.restaurant.domain.entities.value_objects.table_number_id_vo import TableNumberId
+from src.restaurant.domain.value_objects.restaurant_id_vo import RestaurantIdVo
 
 class OrmReservationQueryRepository(IReservationQueryRepository):
 
     def __init__(self, session: AsyncSession):
         self.session = session
+        
+    def _map_orm_to_domain(self, orm: OrmReservationModel) -> Reservation:
+        """
+        Convierte la instancia ORM a la entidad de dominio Reservation
+        """
+        return Reservation(
+            client_id         = UserIdVo(orm.client_id),
+            id                = ReservationIdVo(orm.id),
+            date_start        = ReservationDateStartVo(orm.date_start),
+            date_end          = ReservationDateEndVo(orm.date_end),
+            reservation_date  = ReservationDateVo(orm.reservation_date),
+            status            = ReservationStatusVo(orm.status),
+            table_number_id   = TableNumberId(orm.table_number_id),
+            restaurant_id     = RestaurantIdVo(orm.restaurant_id),
+            dish              = []  # ajusta según tu lógica de agregados
+        )
     
     async def exists_by_date_client(self, date_start: time, date_end: time, client_id: str, reservation_date: date) -> Result[bool]:
         try:
@@ -37,20 +62,15 @@ class OrmReservationQueryRepository(IReservationQueryRepository):
                 select(OrmReservationModel).where(literal_column("id") == id)
             )
             orm = result.scalars().first()
+            
             if orm is None:
-               return Result.fail(Exception("No encontrado"))
-            v = Reservation(
-                    client_id=(orm.id),
-                    id=(orm.id),
-                    date_end=(orm.date_end),
-                    date_start=(orm.date_start),
-                    reservation_date=(orm.reservation_date),
-                    status=(orm.status),
-                    table_number_id=(orm.table_number_id),
-                    restaurant_id=orm.restaurant_id
-                )
-            return Result.success(v)
+               return Result.fail(InfrastructureException(message="Reservation Not Found",infra_type=ExceptionInfrastructureType.NOT_FOUND) )
+           
+            value = self._map_orm_to_domain(orm)
+            
+            return Result.success(value)
         except Exception as e:
+            print(f"fallo aca {e}")
             return Result.fail(InfrastructureException(str(e)))
 
     async def exists_by_table(self, table_id: str, date_start: time, date_end: time, reservation_date: date, restaurant_id: str) -> Result[bool]:
@@ -87,17 +107,7 @@ class OrmReservationQueryRepository(IReservationQueryRepository):
             orms = result.scalars().all()
             resers: list[Reservation] = []
             for orm in orms:
-                v = Reservation(
-                    client_id=(orm.id),
-                    id=(orm.id),
-                    date_end=(orm.date_end),
-                    date_start=(orm.date_start),
-                    reservation_date=(orm.reservation_date),
-                    status=(orm.status),
-                    table_number_id=(orm.table_number_id),
-                    restaurant_id=orm.restaurant_id,
-                    dish=[]
-                )
+                v = self._map_orm_to_domain(orm=orm)
                 resers.append(v)
             return Result.success(resers)
         except Exception as e:
@@ -116,16 +126,7 @@ class OrmReservationQueryRepository(IReservationQueryRepository):
             orms = result.scalars().all()
             resers: list[Reservation] = []
             for orm in orms:
-                v = Reservation(
-                    client_id=(orm.id),
-                    id=(orm.id),
-                    date_end=(orm.date_end),
-                    date_start=(orm.date_start),
-                    reservation_date=(orm.reservation_date),
-                    status=(orm.status),
-                    table_number_id=(orm.table_number_id),
-                    restaurant_id=orm.restaurant_id
-                )
+                v = self._map_orm_to_domain(orm=orm)
                 resers.append(v)
             return Result.success(resers)
         except Exception as e:
@@ -137,16 +138,7 @@ class OrmReservationQueryRepository(IReservationQueryRepository):
             orms = result.scalars().all()
             resers: list[Reservation] = []
             for orm in orms:
-                v = Reservation(
-                    client_id=(orm.id),
-                    id=(orm.id),
-                    date_end=(orm.date_end),
-                    date_start=(orm.date_start),
-                    reservation_date=(orm.reservation_date),
-                    status=(orm.status),
-                    table_number_id=(orm.table_number_id),
-                    restaurant_id=orm.restaurant_id
-                )
+                v = self._map_orm_to_domain(orm=orm)
                 resers.append(v)
             return Result.success(resers)
         except Exception as e:

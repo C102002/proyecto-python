@@ -13,14 +13,14 @@ class UserRoleVerify:
 
         repo = OrmUserQueryRepository(db)
         res  = await repo.get_user_email(decoded["sub"])
+        
         if res.is_error:
-            raise HTTPException(404, "User not found")
-
-        user = res.value  # supongamos que aquí tienes tu modelo con .id, .email, etc.
-
-        # comprobación de scopes…
-        if not set(scopes.scopes).intersection(decoded["scopes"]):
-            raise HTTPException(403, "Forbidden")
+            raise HTTPException(status_code=404, detail="User not found")
+                
+        if not set(scopes.scopes).intersection(set(decoded["scopes"])):
+            raise HTTPException(status_code=403, detail="Forbidden: Client attempts to access admin endpoint.")
+        
+        user=res.value
 
         return {
             "user_id":   user.id.user_id,

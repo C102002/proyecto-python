@@ -14,6 +14,9 @@ class FindActiveReservationByClientService(IService[FindActiveReservationRequest
         self.query_repository = query_reser
     async def execute(self, value: FindActiveReservationRequest) -> Result[FindActiveReservationResponse]:
         find = await self.query_repository.get_active_by_client_id(client_id=value.client_id)
-        response = FindActiveReservationResponse(reservations=find)
-        return Result.success(response)
+        
+        if find.is_error:
+            return Result.fail(find.error)
+        
+        return Result.success(FindActiveReservationResponse(find.value))
 
