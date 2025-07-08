@@ -6,6 +6,7 @@ from src.reservation.application.repositories.command.reservation_command_reposi
 from src.reservation.domain.aggregate.reservation import Reservation
 from src.reservation.infraestructure.exceptions.reservation_not_found_exception import ReservationNotFoundException
 from src.reservation.infraestructure.models.orm_reservation_model import OrmReservationModel
+from src.menu.infrastructure.models.reservation_dishes_association import OrmReservationDishModel
 
 class OrmReservationCommandRepository(IReservationCommandRepository):
     def __init__(self, session: AsyncSession):
@@ -25,6 +26,22 @@ class OrmReservationCommandRepository(IReservationCommandRepository):
             )
             self.session.add(orm)
             await self.session.commit()
+
+            for domain_dish in entry.dish:
+                    # Aquí asumes que DishModel ya existe en la base de datos o lo recuperas.
+                    # Si no, deberías tener un método para guardar el DishModel también.
+
+                orm_reservation_dish = OrmReservationDishModel(
+                    reservation_id=orm.id, # Usamos el ID de la reserva guardada
+                    dish_id=domain_dish.value       # Usamos el ID del plato del dominio
+                        # quantity=domain_dish.quantity # Ejemplo si tuvieras más campos
+                )
+                    # Usar 'await' para añadir cada enlace
+                self.session.add(orm_reservation_dish)
+
+                # 3. 'await' para el commit de las entradas de la tabla intermedia
+                await self.session.commit() 
+
             return Result.success(entry)
         except Exception as e:
             await self.session.rollback()

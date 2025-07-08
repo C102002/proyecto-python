@@ -13,6 +13,7 @@ from src.reservation.infraestructure.dtos.create_reservation_inf_request_dto imp
 from src.reservation.infraestructure.repositories.command.orm_reservation_command_repository import OrmReservationCommandRepository
 from src.reservation.infraestructure.repositories.query.orm_reservation_query_repository import OrmReservationQueryRepository
 from src.restaurant.infraestructure.repositories.query.orm_restaurant_query_repository import OrmRestaurantQueryRepository
+from src.menu.infrastructure.repositories.query.orm_menu_query_repository import OrmMenuQueryRepository
 
 reservation_router = APIRouter(
     prefix="/reservation",
@@ -29,14 +30,14 @@ class CreateReservationController:
         command_repository = OrmReservationCommandRepository(postgres_session)
         query_restau = OrmRestaurantQueryRepository(postgres_session)
         id_generator = UuidGenerator()
-        #menu_repo = MenuRepository(postgres_session)
+        menu_repo = OrmMenuQueryRepository(postgres_session)
         
         service = CreateReservationService(
             query_reser=query_repository,
             command_reser=command_repository,
             id_generator=id_generator,
             query_restau=query_restau,
-            #menu_repo=menu_repo
+            menu_repo=menu_repo
         )
         return service
 
@@ -51,13 +52,13 @@ class CreateReservationController:
         )
         async def create(
             entry: CreateReservationInfRequestDto, 
-            service: CreateReservationService = Depends(self.get_service),
+            reservation_service: CreateReservationService = Depends(self.get_service),
             token:dict = Security(UserRoleVerify(), scopes=["client:create_reservation"])
             ):
-            if service is None:
+            if reservation_service is None:
                 raise RuntimeError("CreateReservationService not initialized. Did you forget to call init()?")
                         
-            service = ExceptionDecorator(service, FastApiErrorHandler())
+            service = ExceptionDecorator(reservation_service, FastApiErrorHandler())
             response=await service.execute(
                 CreateReservationRequest(
                     client_id=token["user_id"],
