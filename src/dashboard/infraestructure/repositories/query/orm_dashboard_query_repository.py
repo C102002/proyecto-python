@@ -24,7 +24,7 @@ from src.dashboard.application.dtos.request.get_top_dishes_preorder_request_dto 
     GetTopDishesPreorderRequestDTO,
 )
 from src.dashboard.application.dtos.response.get_top_dishes_preorder_response_dto import (
-    GetTopDishesPreorderRequestDTO as TopDishesResponseDTO,
+    GetTopDishesPreorderResponseDTO
 )
 
 from src.dashboard.application.dtos.response.get_occupacy_percentage_response_dto import (
@@ -33,6 +33,7 @@ from src.dashboard.application.dtos.response.get_occupacy_percentage_response_dt
 from src.dashboard.application.repositories.query.dashboard_query_repository import (
     IDashboardQueryRepository,
 )
+from src.menu.infrastructure.models.reservation_dishes_association import OrmReservationDishModel
 from src.reservation.infraestructure.models.orm_reservation_model import OrmReservationModel
 from src.restaurant.infraestructure.models.orm_restaurant_model import OrmRestaurantModel
 from src.restaurant.infraestructure.models.orm_table_model import OrmTableModel
@@ -76,36 +77,35 @@ class OrmDashboardQueryRepository(IDashboardQueryRepository):
             return Result.fail(
                 InfrastructureException(str(e), infra_type=ExceptionInfrastructureType.BAD_REQUEST)
             )
-
+            
     async def get_top_preordered_dishes(
         self, dto: GetTopDishesPreorderRequestDTO
-    ) -> Result[List[TopDishesResponseDTO]]:
-        """
-        Returns the top N pre-ordered dishes.
-        Assumes there's an ORM model DishModel with fields
-        dish_id, dish_name.
-        """
+    ) -> Result[list[GetTopDishesPreorderResponseDTO]]:
         try:
             stmt = (
                 select(
-                    DishModel.id,
-                    DishModel.name,
-                    func.count().label("total_preorders"),
+                    DishModel.id.label("dish_id"),
+                    DishModel.name.label("dish_name"),
+                    func.count(OrmReservationDishModel.dish_id)
+                        .label("total_preorders"),
                 )
-                .group_by(
-                    DishModel.id,
-                    DishModel.name,
-                )
-                .order_by(func.count().desc())
+                # 1) Arrancamos de la tabla de asociación:
+                .select_from(OrmReservationDishModel)
+                # 2) Unimos al modelo de platos para nombre e id
+                .join(DishModel, DishModel.id == OrmReservationDishModel.dish_id)
+                # 3) Agrupamos y ordenamos
+                .group_by(DishModel.id, DishModel.name)
+                .order_by(func.count(OrmReservationDishModel.dish_id).desc())
                 .limit(dto.top_n)
             )
+
             result = await self.session.execute(stmt)
             rows = result.all()
 
             dishes = [
-                TopDishesResponseDTO(
-                    dish_id=row.id,
-                    dish_name=row.name,
+                GetTopDishesPreorderResponseDTO(
+                    dish_id=row.dish_id,
+                    dish_name=row.dish_name,
                     total_preorders=row.total_preorders,
                 )
                 for row in rows
@@ -114,7 +114,9 @@ class OrmDashboardQueryRepository(IDashboardQueryRepository):
 
         except Exception as e:
             return Result.fail(
-                InfrastructureException(str(e), infra_type=ExceptionInfrastructureType.BAD_REQUEST)
+                InfrastructureException(str(e),
+                    infra_type=ExceptionInfrastructureType.BAD_REQUEST
+                )
             )
 
     # Asume que existe un modelo como este para los restaurantes

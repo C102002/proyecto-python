@@ -3,11 +3,12 @@ from typing import List
 
 from src.common.utils.result import Result
 from src.dashboard.application.dtos.request.get_reservation_count_request_dto import GetReservationCountRequestDTO
+from src.dashboard.application.dtos.request.get_top_dishes_preorder_request_dto import GetTopDishesPreorderRequestDTO
 from src.dashboard.application.dtos.response.get_occupacy_percentage_response_dto import GetOccupancyPercentageResponseDto
 from src.dashboard.application.dtos.request.get_occupacy_percentage_request_dto import GetOccupancyPercentageRequestDto
-from src.dashboard.application.dtos.response.get_top_dishes_preorder_response_dto import GetTopDishesPreorderRequestDTO
-from src.dashboard.application.dtos.request.get_top_dishes_preorder_request_dto import GetTopDishesPreorderRequestDTO
+
 from src.dashboard.application.dtos.response.get_reservation_count_response_dto import GetReservationCountResponseDTO
+from src.dashboard.application.dtos.response.get_top_dishes_preorder_response_dto import GetTopDishesPreorderResponseDTO
 
 class IDashboardQueryRepository(ABC):
     """
@@ -23,7 +24,7 @@ class IDashboardQueryRepository(ABC):
     async def get_top_preordered_dishes(
         self,
         dto:GetTopDishesPreorderRequestDTO
-    ) -> Result[List[GetTopDishesPreorderRequestDTO]]:
+    ) -> Result[List[GetTopDishesPreorderResponseDTO]]:
         """
         returns  `top_n` disher preordered.
         """

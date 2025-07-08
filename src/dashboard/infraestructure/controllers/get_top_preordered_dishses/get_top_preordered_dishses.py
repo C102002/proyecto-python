@@ -10,7 +10,7 @@ from src.common.infrastructure.middlewares.get_postgresql_session import GetPost
 
 from src.dashboard.application.services.get_top_preordered_dishses_service import GetTopPreorderedDishesService
 from src.dashboard.infraestructure.dtos.request.get_top_dishes_preorder_request_dto import GetTopDishesPreorderRequestInfDTO
-from src.dashboard.infraestructure.dtos.response.get_occupacy_percentage_response_inf_dto import GetOccupancyPercentageResponseInfDTO
+from src.dashboard.infraestructure.dtos.response.get_top_dishes_preorder_response_dto import GetTopDishesPreorderResponseInfDTO
 from src.dashboard.infraestructure.repositories.query.orm_dashboard_query_repository import OrmDashboardQueryRepository
 from src.dashboard.infraestructure.routers.dashboard_router import dashboard_router
 
@@ -30,26 +30,27 @@ class GetTopPreorderedDishesController:
     def setup_routes(self):
         @dashboard_router.get(
             "/platos",
-            response_model=List[GetOccupancyPercentageResponseInfDTO],
+            response_model=List[GetTopDishesPreorderResponseInfDTO],
             status_code=status.HTTP_200_OK,
             summary="Get top pre-ordered dishes",
-            description="Returns the most pre-ordered dishes, limited by top_n",
-            response_description="List of dishes with preorder counts"
+            description="Devuelve los platos más pre-ordenados, limitado por top_n",
+            response_description="Lista de platos con conteo de pre-órdenes"
         )
         async def get_top_preordered_dishes(
             input_dto: GetTopDishesPreorderRequestInfDTO = Depends(),
             service: GetTopPreorderedDishesService = Depends(self.get_query_service),
             token = Security(UserRoleVerify(), scopes=["admin:manage"])
         ):
+            app_dto = input_dto.to_dto()
             decorated = ExceptionDecorator(
                 service=service,
                 error_handler=FastApiErrorHandler()
             )
-            result = await decorated.execute(input_dto)
+            result = await decorated.execute(app_dto)
             dishes = result.value
 
             return [
-                GetOccupancyPercentageResponseInfDTO(
+                GetTopDishesPreorderResponseInfDTO(
                     dish_id=dish.dish_id,
                     dish_name=dish.dish_name,
                     total_preorders=dish.total_preorders,

@@ -3,11 +3,12 @@ from typing import List
 from src.common.application import IService
 from src.common.utils.result import Result
 from src.dashboard.application.dtos.request.get_top_dishes_preorder_request_dto import GetTopDishesPreorderRequestDTO
+from src.dashboard.application.dtos.response.get_top_dishes_preorder_response_dto import GetTopDishesPreorderResponseDTO
 from src.dashboard.application.repositories.query.dashboard_query_repository import GetTopDishesPreorderRequestDTO, IDashboardQueryRepository
 
 
 class GetTopPreorderedDishesService(
-    IService[GetTopDishesPreorderRequestDTO, List[GetTopDishesPreorderRequestDTO]]
+    IService[GetTopDishesPreorderRequestDTO, List[GetTopDishesPreorderResponseDTO]]
 ):
     """
     Service to fetch the most pre-ordered dishes.
@@ -19,7 +20,7 @@ class GetTopPreorderedDishesService(
 
     async def execute(
         self, value: GetTopDishesPreorderRequestDTO
-    ) -> Result[List[GetTopDishesPreorderRequestDTO]]:
+    ) -> Result[List[GetTopDishesPreorderResponseDTO]]:
         """
         Fetch the top N pre-ordered dishes via the dashboard repository.
         """
@@ -30,4 +31,4 @@ class GetTopPreorderedDishesService(
         if dishes.is_error:
             return Result.fail(dishes.fail)
 
-        return Result.success(dishes)
+        return Result.success(dishes.value)

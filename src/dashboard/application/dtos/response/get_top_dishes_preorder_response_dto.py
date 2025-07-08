@@ -1,4 +1,4 @@
-class GetTopDishesPreorderRequestDTO:
+class GetTopDishesPreorderResponseDTO:
     """
     DTO to retrieve the most pre-ordered dishes.
     """
@@ -10,7 +10,7 @@ class GetTopDishesPreorderRequestDTO:
 
     def __repr__(self):
         return (
-            f"GetTopDishesPreorderRequestDTO("
+            f"GetTopDishesPreorderResponseDTO("
             f"dish_id={self.dish_id!r}, "
             f"dish_name={self.dish_name!r}, "
             f"total_preorders={self.total_preorders!r}"

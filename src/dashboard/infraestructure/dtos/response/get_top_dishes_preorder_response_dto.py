@@ -1,22 +1,23 @@
 from pydantic import BaseModel, Field
 
-from src.dashboard.application.enum.period_type import PeriodType
-
-class GetReservationCountResponseInfDTO(BaseModel):
+class GetTopDishesPreorderResponseInfDTO(BaseModel):
     """
-    Infrastructure DTO for the reservation count response.
+    Infrastructure DTO for the top pre-ordered dishes response.
     """
 
-    period_type: PeriodType = Field(
+    dish_id: str = Field(
         ...,
-        description="Period to group reservations by: DAY or WEEK"
+        description="Dish unique identifier"
     )
-    count: int = Field(
+    dish_name: str = Field(
+        ...,
+        description="Name of the dish"
+    )
+    total_preorders: int = Field(
         ...,
         ge=0,
-        description="Total number of reservations in the given period"
+        description="Total number of times the dish was pre-ordered"
     )
 
     class Config:
-        title = "GetReservationCountResponseInfDTO"
-        use_enum_values = True
+        title = "GetTopDishesPreorderResponseInfDTO"
