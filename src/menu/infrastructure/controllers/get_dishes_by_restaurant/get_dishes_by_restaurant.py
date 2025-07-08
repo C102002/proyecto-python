@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Depends, status
+from fastapi import FastAPI, Depends, status, Security
 from typing import List
 from src.menu.application.dtos.response.dish_response_dto import DishResponseDto
 from src.menu.application.services.get_dishes_by_restaurant_service import GetDishesByRestaurantService
@@ -9,6 +9,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from ...repositories.command.orm_menu_command_repository import OrmMenuCommandRepository
 from ...repositories.query.orm_menu_query_repository import OrmMenuQueryRepository
 from src.common.infrastructure import GetPostgresqlSession
+from src.auth.infrastructure.middlewares.user_role_verify import UserRoleVerify
 
 class GetDishesByRestaurantController:
     def __init__(self, app: FastAPI):
@@ -34,7 +35,7 @@ class GetDishesByRestaurantController:
             status_code=status.HTTP_200_OK,
             summary="Get dishes by restaurant",
         )
-        async def get_dishes_by_restaurant(restaurant_id: str, menu_service: GetDishesByRestaurantService = Depends(self.get_service)):
+        async def get_dishes_by_restaurant(restaurant_id: str, token = Security(UserRoleVerify(), scopes=["client:view_menu"]), menu_service: GetDishesByRestaurantService = Depends(self.get_service)):
 
             service = ExceptionDecorator(menu_service, FastApiErrorHandler())
             menu = await service.execute(restaurant_id)

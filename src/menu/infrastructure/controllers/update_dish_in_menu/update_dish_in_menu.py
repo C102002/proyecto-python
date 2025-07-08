@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Depends, status
+from fastapi import FastAPI, Depends, status, Security
 from src.menu.application.dtos.request.update_dish_request_dto import UpdateDishRequestDto
 from ...dtos.request.update_dish_request_inf_dto import UpdateDishRequestInfDto
 from src.menu.application.dtos.response.dish_response_dto import DishResponseDto
@@ -10,6 +10,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from ...repositories.command.orm_menu_command_repository import OrmMenuCommandRepository
 from ...repositories.query.orm_menu_query_repository import OrmMenuQueryRepository
 from src.common.infrastructure import GetPostgresqlSession
+from src.auth.infrastructure.middlewares.user_role_verify import UserRoleVerify
 
 class UpdateDishInMenuController:
     def __init__(self, app: FastAPI):
@@ -35,7 +36,7 @@ class UpdateDishInMenuController:
             status_code=status.HTTP_202_ACCEPTED,
             summary="Remove dish from menu",
         )
-        async def update_dish_in_menu(dish_id: str, dish_dto: UpdateDishRequestInfDto, menu_service: UpdateDishInMenuService = Depends(self.get_service)):
+        async def update_dish_in_menu(dish_id: str, dish_dto: UpdateDishRequestInfDto, token = Security(UserRoleVerify(), scopes=["admin:manage"]), menu_service: UpdateDishInMenuService = Depends(self.get_service)):
 
             request = UpdateDishRequestDto(
                 dish_id=dish_id,

@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Depends, status
+from fastapi import FastAPI, Depends, status, Security
 from src.menu.application.dtos.request.create_dish_request_dto import CreateDishRequestDto
 from ...dtos.request.create_dish_request_inf_dto import CreateDishRequesInftDto
 from src.menu.application.dtos.response.dish_response_dto import DishResponseDto
@@ -10,6 +10,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from ...repositories.command.orm_menu_command_repository import OrmMenuCommandRepository
 from ...repositories.query.orm_menu_query_repository import OrmMenuQueryRepository
 from src.common.infrastructure import GetPostgresqlSession
+from src.auth.infrastructure.middlewares.user_role_verify import UserRoleVerify
 
 class AddDishToMenuController:
     def __init__(self, app: FastAPI):
@@ -35,7 +36,7 @@ class AddDishToMenuController:
             status_code=status.HTTP_200_OK,
             summary="Add a dish",
         )
-        async def add_dish_to_menu(restaurant_id: str, dish_dto: CreateDishRequesInftDto, menu_service: AddDishToMenuService = Depends(self.get_service)):
+        async def add_dish_to_menu(restaurant_id: str, dish_dto: CreateDishRequesInftDto, token = Security(UserRoleVerify(), scopes=["admin:manage"]), menu_service: AddDishToMenuService = Depends(self.get_service)):
 
             request = CreateDishRequestDto(
                 name=dish_dto.name,
