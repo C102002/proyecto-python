@@ -5,6 +5,9 @@ from contextlib import asynccontextmanager
 from src.auth.infrastructure.controllers.register.user_register import UserRegisterController
 from src.auth.infrastructure.controllers.login.user_login import UserLoginController
 from src.auth.infrastructure.controllers.update.user_update import UserUpdateController
+from src.dashboard.infraestructure.controllers.get_occupacy_percentage.get_occupacy_percentage import GetOccupancyPercentageController
+from src.dashboard.infraestructure.controllers.get_reservation_count.get_reservation_count import GetReservationCountController
+from src.dashboard.infraestructure.controllers.get_top_preordered_dishses.get_top_preordered_dishses import GetTopPreorderedDishesController
 from src.reservation.infraestructure.controllers.admin_cancel_reservation import AdminCancelReservationController
 from src.reservation.infraestructure.controllers.cancel_reservation import CancelReservationController
 from src.reservation.infraestructure.controllers.create_reservation import CreateReservationController
@@ -81,3 +84,8 @@ AddDishToMenuController(app)
 GetDishesByRestaurantController(app)
 RemoveDishFromMenuController(app)
 UpdateDishInMenuController(app)
+
+# Dashboard Controllers
+GetOccupancyPercentageController(app)
+GetReservationCountController(app)
+GetTopPreorderedDishesController(app)
