@@ -29,7 +29,7 @@ class GetTopPreorderedDishesController:
 
     def setup_routes(self):
         @dashboard_router.get(
-            "/dishes/top-preordered",
+            "/platos",
             response_model=List[GetOccupancyPercentageResponseInfDTO],
             status_code=status.HTTP_200_OK,
             summary="Get top pre-ordered dishes",

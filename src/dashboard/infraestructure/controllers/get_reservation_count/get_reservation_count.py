@@ -31,7 +31,7 @@ class GetReservationCountController:
 
     def setup_routes(self):
         @dashboard_router.get(
-            "/reservations/count",
+            "/reservas",
             response_model=GetReservationCountResponseInfDTO,
             status_code=status.HTTP_200_OK,
             summary="Get reservation count",

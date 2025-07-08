@@ -30,7 +30,7 @@ class GetOccupancyPercentageController:
 
     def setup_routes(self):
         @dashboard_router.get(
-            "/occupancy",
+            "/ocupacion",
             response_model=List[GetOccupancyPercentageResponseInfDTO],
             status_code=status.HTTP_200_OK,
             summary="Get occupancy percentage",
