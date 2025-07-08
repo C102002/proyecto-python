@@ -1,9 +1,11 @@
 from datetime import date
 from typing import NamedTuple
 
+from src.dashboard.enum.period_type import PeriodType
+
 class ReservationCountRequestDTO(NamedTuple):
     """
-    Número total de reservas agrupadas por período.
+    Request para obtener el total de reservas,
+    agrupadas según el tipo de periodo.
     """
-    period: date      # día o fecha inicial de la semana
-    count: int
+    period_type: PeriodType   # DAY o WEEK
