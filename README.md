@@ -34,7 +34,7 @@ This is a Python API built with FastAPI and managed with Poetry.
 1.  **Clone the repository (if applicable):**
 
     ```bash
-    git clone <your-repository-url>
+    git clone https://github.com/C102002/proyecto-python.git
     cd proyecto-python
     ```
 
